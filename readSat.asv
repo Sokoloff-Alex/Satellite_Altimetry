@@ -20,7 +20,7 @@ cd (currentDir)
 % ===== Parse RMP file for description ====================================
 [NumberOfParameters, Parameter, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter] = ParseRMP(SatelliteName, MetaFileName);
 
-% ===== Parce data files ==================================================
+% Parce data files
 AllRecords = [];
 for i = 1:size(files,1)
     FileName = files(i,:)
@@ -29,11 +29,11 @@ for i = 1:size(files,1)
 
     % Save as a table in binary and ASCII
     mkdir ([SatelliteName,'_ASCII'])
-    ASCIIFileName = [SatelliteName,'_ASCII\',FileName,'_ASCII.txt']
+    ASCIIFileName = [SatelliteName,'_ASCII\',FileName,'ASCII.txt']
     FileID = fopen(ASCIIFileName, 'w'); % Open the binary file for writing with file ID
 
     % ======== Write Header into ASCII file ===============================
-    fprintf(FileID, '%12s %14s\r\n', 'Satellite: ', SatelliteName);
+    fprintf(FileID, '%12s %10s\r\n', 'Satellite: ', SatelliteName);
     fprintf(FileID, '%18s %24s\r\n', 'Date of parsing: ', datestr(now,'dd-mmmm-yyyy, HH:MM:SS'));
     fprintf(FileID, '\r\n');
     fprintf(FileID, '%16s\t %15s\t %15s\t %11s\t  %10s\t', ShortCut{1,:}, ShortCut{2,:}, ShortCut{3,:}, ShortCut{4,:}, ShortCut{5,:}); % Write header
@@ -42,14 +42,9 @@ for i = 1:size(files,1)
     end
     fprintf(FileID, '%10s\r\n', ShortCut{19,:});
     
-    fprintf(FileID, '%16s\t %15s\t %15s\t %11s\t  %10s\t', ' -  ', '[deg]', '[deg]', '[m] ', '[m] '); % Write header
-    for i = 6:15
-        fprintf(FileID, '%10s\t', '[m] ');
-    end
-    fprintf(FileID, '%10s\t %10s\t %10s\t %10s\r\n', ' - ', '- ', '[m] ','[m] ');
     
     for i = 1:258; 
-        fprintf(FileID, '%1s', '=');   % Add separation line after header
+        fprintf(FileID, '%1s', '='); 
     end
     fprintf(FileID, '%1s\r\n', ' ');
 
