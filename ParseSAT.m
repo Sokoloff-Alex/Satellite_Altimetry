@@ -1,12 +1,12 @@
-function[Records] = ParseRMP(SatelliteName, FileName, NumberOfParameters, Parameter, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter)
+function[Records] = ParseRMP(FilePathName, NumberOfParameters, DataType, Desimal)
 % Parse Satellite files using info from RMP file
-% Apllied Computer Science
+% Apllied Computer Science 
 % 20.01.2015
 % by Sokolov Alexandr, ESPACE, TUM
 
 % Files to process
-CurrentDir = cd;
-FilePathName = [CurrentDir,'\',SatelliteName,'_raw\',FileName]; 
+% CurrentDir = cd;
+% FilePathName = [FilePathName]; 
 FileID = fopen(FilePathName,'r');
 Records = zeros(3000,NumberOfParameters); % Dummy matrix
 

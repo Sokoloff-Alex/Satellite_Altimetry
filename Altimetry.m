@@ -3,33 +3,35 @@
 % 20.01.2015
 % by Sokolov Alexandr, ESPACE, TUM
 
-fclose all  %#ok<*PRTCAL>
 clear all
 clc
 
+tic;
 % Read data from all satellite files and merge the data
-% [AllRecordsEnvsat] = readSat('envisat');
-[AllRecordsJason] = readSat('jason');
-
+% [AllRecordsEnvsat] = ParseSatData('Envisat');
+[AllRecordsJason1] = ParseSatData('Jason-1');
+ParsingTime= toc
 %%
-figure(1)
-hold on
-% plot(AllRecordsEnvsat(:,3),AllRecordsEnvsat(:,2),'.b')
-plot(AllRecordsJason(:,3),AllRecordsJason(:,2),'.r')
-hold off
+tic
+SatFilter('Jason-1',0,0);
+fclose all;
+filteredTime = toc;
 
 %%
 CurrentDir = cd;
 figure(2);
 hold on;
 % Set background image
-BackgroundImageFilePath = [CurrentDir,'\','1200px-Equirectangular_projection_SW.jpg'];
+BackgroundImageFilePath = [CurrentDir,'\','map.jpg'];
 BackgroundImage = imread(BackgroundImageFilePath);
 imagesc([-180 180], [-90 90], flipdim(BackgroundImage,1));
 set(gca,'ydir','normal');
 % Plot data
 % plot (AllRecordsEnvsat(:,3)-180',AllRecordsEnvsat(:,2)', '.r', 'LineWidth', 2);
-plot (AllRecordsJason(:,3)-180' ,AllRecordsJason(:,2)',  '.g', 'LineWidth', 2);
+plot (AllRecordsJason1(:,3)-180' ,AllRecordsJason1(:,2)',  '.g', 'Markersize', 1);
+plot (tujason1(:,3)-180' ,tujason1(:,2)',  '.r', 'Markersize', 1);
+
+title('Jason-1 GroundTrack / cycle #110')
 % Set limits for the axis
 xlimits = [-180 180];
 set(gca,'XLim', xlimits);

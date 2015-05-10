@@ -1,35 +1,41 @@
-function[NumberOfParameters, Parameter, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter] = Parser(SatelliteName, MetaFileName)
+function[NumberOfParameters, ParameterNumber, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter] = Parser(SatelliteName)
 % Parser of RMP Meta-file Description of Parameter for Satellite data-files
 % by Sokolov Alexandr
-% input the Satellite name and Meta-file name 
+% input the Satellite name and Meta-file name (*.RMP file) 
 % output is the total NumberOfParameters as scalar
 %  and other param-s as vectors: Parameter, LegthOfByte, DataType, Desimal, 
 % Unit, ShortCut, DescriptionOfParameter
 
-CurrentDir = cd;
-FileFullName = [CurrentDir,'\',SatelliteName,'_raw\', MetaFileName];
-FileID = fopen(FileFullName, 'r');
+% ===== Find RMP file =====================================================
+SatelliteName = 'Jason-1';
 
-DataTypes = { '1', 'int8'
+RMP_FileName = ls ([SatelliteName,'\*.rmp']); % finde RMP file 
+RMP_FilePathName = [SatelliteName,'\',RMP_FileName]; % dipslay files in console
+
+disp(['RMP_FilePathName: ',RMP_FilePathName])
+
+RMP_FileID = fopen(RMP_FilePathName, 'r');
+
+DataTypesLookUpTable = { '1', 'int8'
               '2', 'int16'
               '4', 'int32'
              '+1', 'uint8'
              '+2', 'uint16'
              '+4', 'uint32'};
-NumberOfDataTypes =  size(DataTypes,1);     
+NumberOfDataTypes =  size(DataTypesLookUpTable,1);     
 
 % read header 
-if (isempty(FileID) ~=1)
-    Header = fgets(FileID);
+if (isempty(RMP_FileID) ~=1)
+    Header = fgets(RMP_FileID);
     Str = strsplit(Header);
     NumberOfParameters = str2double(Str{2});
     LenghtOfMessage = str2double(Str{3});
 else
-    disp('ERROR: File is empty')
+    disp('ERROR: File is empty');
 end
 
 %   Dummies
-Parameter = zeros(NumberOfParameters);
+ParameterNumber = zeros(NumberOfParameters,1);
 Bytes = cell(NumberOfParameters,1);
 LegthOfByte = zeros(NumberOfParameters,1); % for check-sum
 DataType = cell(NumberOfParameters,1);
@@ -40,23 +46,23 @@ DescriptionOfParameter = cell(NumberOfParameters,1);
 
 %Parse by line the whole file
 for i = 1:NumberOfParameters
-    line = fgets(FileID);
+    line = fgets(RMP_FileID);
     Str = strsplit(line);
-    Parameter(i) = str2double(Str{1}); % Number of Parameter
+    ParameterNumber(i) = str2double(Str{1}); % Number of Parameter
     Bytes(i) = Str(2); % Byte designation
     LegthOfByte(i) = str2double(Bytes(i));
 
     for j=1:NumberOfDataTypes     
-        if (strcmp(Bytes{i}, DataTypes(j,1)) == 1)
-            DataType(i) = DataTypes(j,2); % Type of Data
+        if (strcmp(Bytes{i}, DataTypesLookUpTable(j,1)) == 1)
+            DataType(i) = DataTypesLookUpTable(j,2); % Type of Data
         end
     end            
-    [DesimalStr, Unit] = strtok(Str(3),'.'); % Separate Decimal and Unit
+    [DesimalStr, UnitStr] = strtok(Str(3),'.'); % Separate Decimal and Unit
     Desimal(i) = str2double(DesimalStr); % Desimal
-    Unit(i) = strtok(Unit,'.');  % Unit
+    UnitStr = UnitStr{1}(2:end); % Unit
+    Unit(i) = {UnitStr};
     ShortCut(i) = strtok(Str(4),'.'); % Name of ShortCut
     DescriptionOfParameter(i) = Str(5); % Description Of Parameter
-
 end
 
 CheckSum = sum(LegthOfByte);
@@ -65,6 +71,19 @@ if (CheckSum ~= LenghtOfMessage)
 end
 
 % RMP_Matrix = [Parameter, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter]
+fclose(RMP_FileID);
+    
+clear i
+clear j
+clear UnitStr
+clear DesimalStr
+clear NumberOfDataTypes
+clear line
+clear RMP_FileID
+clear Str
+clear LenghtOfMessage
+clear RMP_FilePathName
+clear ans
 
-fclose(FileID);
+% disp(['Parsing of ',RMP_FilePathName,' finished'])
 end
