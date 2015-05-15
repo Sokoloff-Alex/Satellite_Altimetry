@@ -8,7 +8,7 @@ function[Records] = ParseRMP(FilePathName, NumberOfParameters, DataType, Desimal
 % CurrentDir = cd;
 % FilePathName = [FilePathName]; 
 FileID = fopen(FilePathName,'r');
-Records = zeros(3000,NumberOfParameters); % Dummy matrix
+Records = zeros(3500,NumberOfParameters); % Dummy matrix, % Nodal period: 6 745.72 seconds (or 1h52')
 
 counter = 1;
 state = isempty(FileID);

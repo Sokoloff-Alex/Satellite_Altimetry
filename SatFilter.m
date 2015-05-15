@@ -1,21 +1,26 @@
-function[] = SatFilter(SatelliteName,iflags,oflags)
+function[AllRecFiltered] = SatFilter(SatelliteName,iflags,oflags, STD_threshold, SWH_threshold, SSH_mssh_threshold)
 % Filter of satellite data using instrumental and orbital flags
 % by Alexandr Sokolov
 
-disp(['Filtering: ', SatelliteName,' by ',num2str(iflags),' and ', num2str(oflags)]);
+disp(['Filtering Sat data: ', SatelliteName]);
+disp(['allowed iflags:     ', iflags]);
+disp(['allowed oflags:     ', oflags]);
+disp(['Std limit:          ', num2str(STD_threshold)]);
 
 % find ASCII folder
+% SatelliteName = 'Jason-1';
 SatelliteASCIIDataFolder = ls ([SatelliteName,'\*ASCII']);
 SatelliteASCIIDataPath = [SatelliteName,'\',SatelliteASCIIDataFolder];
 
 % find cycles
-ls (SatelliteASCIIDataPath);
+% ls (SatelliteASCIIDataPath);
 ListOfCycles = ls (SatelliteASCIIDataPath);
 ListOfCycles = ListOfCycles(3:end,:);
 NumberOfCycles = size(ListOfCycles,1);
 FilteredFolder = [SatelliteName,'\',SatelliteName,'_ASCII_filtered'];
 mkdir (FilteredFolder);
-
+AllRecFiltered = zeros(1000000,23);
+LastIndex = 0;
     for CycleIteration = 1:NumberOfCycles
         Cycle = ListOfCycles(CycleIteration,:);
         ListOfFiles = ls ([SatelliteASCIIDataPath,'\',Cycle]);
@@ -32,10 +37,13 @@ mkdir (FilteredFolder);
             File_B_Path = [FilteredFolder,'\',Cycle,'\',File_A_Name,'_fil.txt'];
 
             % filter Satellite Data file
-            FilterSatFile(File_A_Path, File_B_Path,iflags,oflags);
-    %         AllRecFiltered = [AllRecFiltered;Records];
+            [Records] = FilterSatFile(File_A_Path, File_B_Path, iflags, oflags, STD_threshold, SWH_threshold, SSH_mssh_threshold);
+            LengthNew = size(Records,1);
+            AllRecFiltered((LastIndex+1):(LastIndex+LengthNew),:) = Records;
+            LastIndex = LastIndex + LengthNew;
         disp([File_A_Name,' >> ',File_A_Name,'fil.txt']);
         end
     end
+    AllRecFiltered( all(~AllRecFiltered,2), : ) = []; %Remove zero rows
     disp('Filtering finished')
 end

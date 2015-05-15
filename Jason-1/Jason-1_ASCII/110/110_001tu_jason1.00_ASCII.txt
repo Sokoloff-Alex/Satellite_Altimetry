@@ -1,5 +1,5 @@
  Satellite:           Jason-1
- Date of parsing:     10-May-2015, 19:55:35
+ Date of parsing:     15-May-2015, 12:21:24
  
             jday	           glat	           glon	           hsat	           ralt	    stdalt	       swh	     otide	     etide	      invb	     wtrop	     dtrop	     ionos	      mssh	      geoh	    iflags	    oflags	     ptide	       emb	
                d	            deg	            deg	              m	              m	         m	         m	         m	         m	         m	         m	         m	         m	         m	         m	         -	         -	         m	         m	
