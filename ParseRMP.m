@@ -1,4 +1,4 @@
-function[NumberOfParameters, ParameterNumber, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter] = Parser(SatelliteName)
+function[NumberOfParameters, ParameterNumber, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter, MessageLenght] = ParseRMP(SatelliteName)
 % Parser of RMP Meta-file Description of Parameter for Satellite data-files
 % by Sokolov Alexandr
 % input the Satellite name and Meta-file name (*.RMP file) 
@@ -65,8 +65,8 @@ for i = 1:NumberOfParameters
     DescriptionOfParameter(i) = Str(5); % Description Of Parameter
 end
 
-CheckSum = sum(LegthOfByte);
-if (CheckSum ~= LenghtOfMessage)
+MessageLenght = sum(LegthOfByte);
+if (MessageLenght ~= LenghtOfMessage)
     disp('Check sum is Wrong')
 end
 

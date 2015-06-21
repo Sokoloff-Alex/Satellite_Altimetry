@@ -28,12 +28,19 @@ folderName = [SatelliteName,'\',SatelliteName,'_ASCII\',Cycle];
 mkdir (folderName)
 
 % ===== Parce data files ==================================================
-AllRecords = [];
+AllRecords = zeros(1000000,19);
+LastIndex = 0;
+TotalLength = 0;
     for FileIteration = 1:size(ListOfFiles,1)
         FileName = ListOfFiles(FileIteration,:);
         FilePathName = [SatelliteRawDataPath,'\',Cycle,'\',FileName];
-        Records =  ParseSAT(FilePathName, NumberOfParameters, DataType, Desimal);    
-        AllRecords = [AllRecords;Records];    %#ok<AGROW>
+%         Records =  ParseSAT(FilePathName, NumberOfParameters, DataType, Desimal);    
+        Records =  ParseJason_1(FilePathName);    
+        
+        LengthNew = size(Records,1);
+        AllRecords((LastIndex+1):(LastIndex+LengthNew),:) = Records; % combine into cycle
+        LastIndex = LastIndex + LengthNew;
+        TotalLength = TotalLength + LengthNew;
 
         % ===== Save as a table in binary and ASCII =======================
         ASCIIFileName = [folderName,'\',FileName,'_ASCII.txt'];
@@ -50,18 +57,25 @@ AllRecords = [];
         fprintf(FileID, StrFormat, Unit{1:end});       % write Units
 
         %  Add separation line after header
-        for i = 1:250; fprintf(FileID, '%1s', '='); end;
+        for i = 1:250; 
+            fprintf(FileID, '%1s', '='); 
+        end;
         fprintf(FileID, '\r\n');
 
         % ======== Write data into file in table form =====================
         DataFormat = ['%16.5f\t%15.6f\t%15.6f\t%15.3f\t%15.3f\t',repmat('%10.3f\t',1,10),'%10.0f\t%10.0f\t%10.3f\t%10.3f\t\r\n'];
         
+        % ===== WriteData =================================================
         for row = 1:size(Records,1)
             fprintf(FileID, DataFormat, Records(row,:));
         end        
         fclose(FileID);
-        disp([FileName,' >> ',FileName,'_ASCII.txt']);
+        disp([FileName,' >> ',FileName,'_ASCII.txt']); 
     end
+    AllRecords = AllRecords(1:TotalLength,:);
+%     AllRecords( all(~AllRecords,2), : ) = []; %Remove zero rows
+    CycleFileName = ['Jason-1\',SatelliteName,'_',num2str(Cycle),'.mat'];
+    save(CycleFileName,'AllRecords');
 end
     disp('Parsing of all cycles is finished');
 end

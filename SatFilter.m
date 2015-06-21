@@ -5,7 +5,10 @@ function[AllRecFiltered] = SatFilter(SatelliteName,iflags,oflags, STD_threshold,
 disp(['Filtering Sat data: ', SatelliteName]);
 disp(['allowed iflags:     ', iflags]);
 disp(['allowed oflags:     ', oflags]);
-disp(['Std limit:          ', num2str(STD_threshold)]);
+disp(['Std threshold:      ', num2str(STD_threshold)]);
+disp(['SWH threshold:      ', num2str(SWH_threshold)]);
+disp(['abs(SSH - mssh) thr:', num2str(SSH_mssh_threshold)]);
+
 
 % find ASCII folder
 % SatelliteName = 'Jason-1';
@@ -29,7 +32,7 @@ LastIndex = 0;
         disp(['Starting filtering Cycle: ', Cycle]);
         FilteredCycleFolder = [FilteredFolder,'\',Cycle];
         mkdir (FilteredCycleFolder)
-        AllRecFiltered = [];
+%         AllRecFiltered = [];
 
         for FileIteration = 1:size(ListOfFiles,1)      
             File_A_Name = ListOfFiles(FileIteration,:);
@@ -43,6 +46,8 @@ LastIndex = 0;
             LastIndex = LastIndex + LengthNew;
         disp([File_A_Name,' >> ',File_A_Name,'fil.txt']);
         end
+        CycleFileName = ['Jason-1\',SatelliteName,'_',num2str(Cycle),'_filtered','.mat'];
+        save(CycleFileName,'AllRecFiltered');
     end
     AllRecFiltered( all(~AllRecFiltered,2), : ) = []; %Remove zero rows
     disp('Filtering finished')
