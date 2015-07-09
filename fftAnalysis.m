@@ -7,7 +7,8 @@ Period=1;% cycle
 SamplingFrequency = 1/Period;
 Duration = length(Signal)*1/SamplingFrequency;
 % time=0 : Period : Duration;            time = time(1:end-1);
-frequency = -SamplingFrequency/2 : 1/Duration : SamplingFrequency/2; frequency = frequency(1:end-1);
+frequency = -SamplingFrequency/2 : 1/Duration : SamplingFrequency/2; 
+frequency = frequency(1:end-1);
 
 Signal = Signal'; % Original signal with noise
 

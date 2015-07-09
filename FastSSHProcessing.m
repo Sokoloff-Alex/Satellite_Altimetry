@@ -1,6 +1,8 @@
 %% Parse and Filter 
 clear all; close all; clc
 
+DataPool = SetGlobalVariables;
+
 %% Parsing and filtering
 tic;                                                                      %  allowed flags: iflags    oflags    std  swh abs(ssh-mssh)
 [CycleRecords, CycleRecFiltered_IN, CycleRecFiltered_OUT] = FastPreProcessing('Jason-1', '00000000','00000110', 0.2, 12.0, 2.0);
@@ -9,23 +11,54 @@ disp(['Fast PreProcessing time: ', num2str(FastParseAndFiltertime/60), ' min']);
 
 %% Interpolation
 close all; clear all; clc; tic;
-longSize = 2;
-latSize  = 2;  
+longSize = 1;
+latSize  = 1;  
 factor = 1.6;
 textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2str(factor)];
-for Cycle = 112
-    [Grid,CounterMatrix, DistanceMatrix, ValuesMatrix] = InterpolationFast(Cycle,longSize, latSize, factor); 
-    Average = meanGrid(CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);
-%     Average = WeightedGrid(2, CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);     
+for Cycle = 205:220
+    [Grid,CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Cycle,longSize, latSize, factor); 
+%     meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
+%     WeightedGrid(1, CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);     
 end
 TimeInterpolation = toc;
 
 %%
-Average1 = meanGrid(CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);
+close all
+meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
+
 
 %%
-Average2 = WeightedGrid(2, CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);     
+longSize = 1;
+latSize  = 1;  
+factor = 1.6;
+textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2str(factor)];
 
+for Cycle = 110
+    CounterMatrix = struct2array(load([DataPool,'\Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat']));
+    SSHMatrix = struct2array(load([DataPool,'\Jason-1\Processed\SSHMatrix_',num2str(Cycle),'.mat']));
+    SSHAnomalyMatrix = struct2array(load([DataPool,'\Jason-1\Processed\SSHAnomalyMatrix_',num2str(Cycle),'.mat']));
+    MDTMatrix = struct2array(load([DataPool,'\Jason-1\Processed\MDTMatrix_',num2str(Cycle),'.mat']));
+    DistanceMatrix = struct2array(load([DataPool,'\Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat']));
+    % CoordMatrix = struct2array(load([DataPool,'\Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat']));
+    meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
+end
+
+%%
+Average1 = meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, Cycle, textLegend);
+
+%%
+Average2 = WeightedGrid(1, CounterMatrix, DistanceMatrix, SSHMatrix, Cycle, textLegend);     
+Average3 = WeightedGrid(2, CounterMatrix, DistanceMatrix, SSHMatrix, Cycle, textLegend);     
+
+%%
+% diff = Average3-Average2;
+figure
+pcolor(flipud(Average1))
+title('differenc b/w quadratic and mean weighting')
+shading flat
+% set(gcf, 'renderer', 'zbuffer');
+h = colorbar;
+xlabel(h,'SSH, [m]');
 
 %% Trend Estimation
 clear all; close all; clc
@@ -33,30 +66,30 @@ clear all; close all; clc
 TrendMap = TrendEstimation(50,0.01);
 
 %% Load
-Cycle = 112;
-CounterMatrix = struct2array(load(['Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat']));
-ValuesMatrix = struct2array(load(['Jason-1\Processed\ValuesMatrix_',num2str(Cycle),'.mat']));
-DistanceMatrix = struct2array(load(['Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat']));
-% CoordMatrix = struct2array(load(['Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat']));
+Cycle = 110;
+CounterMatrix = struct2array(load([DataPool,'\Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat']));
+SSHMatrix = struct2array(load([DataPool,'\Jason-1\Processed\ValuesMatrix_',num2str(Cycle),'.mat']));
+DistanceMatrix = struct2array(load([DataPool,'\Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat']));
+% CoordMatrix = struct2array(load([DataPool,'\Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat']));
 
 %% difference in weighting
 close all
 textLegend = ['Grid 2x2, factor 1.6'];
-Average1 = meanGrid(CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);
-Average2 = WeightedGrid(1, CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend);
+Average1 = meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, Cycle, textLegend);
+Average2 = WeightedGrid(1, CounterMatrix, DistanceMatrix, SSHMatrix, Cycle, textLegend);
 AveDiff = Average2 - Average1;
 figure(1)
 pcolor(flipud(AveDiff))
 
 %% Load
 Cycle = 110;
-CycleRecords = struct2array(load(['Jason-1\Data\jason-1_',num2str(Cycle),'.mat']));
-CycleRecFiltered_IN = struct2array(load(['Jason-1\DataFiltered\jason-1_',num2str(Cycle),'_filtered.mat']));
+CycleRecords = struct2array(load([DataPool,'Jason-1\Data\jason-1_',num2str(Cycle),'.mat']));
+CycleRecFiltered_IN = struct2array(load([DataPool,'Jason-1\DataFiltered\jason-1_',num2str(Cycle),'_filtered.mat']));
 
 %% Plot Ground tracks
 figure(1)
 hold on;
-BackgroundImage = imread('Results\map.jpg');
+BackgroundImage = imread([DataPool,'Results\map.jpg']);
 imagesc([180 360+180], [-90 90], flipdim(BackgroundImage,1)); % Right half
 imagesc([-180 180],    [-90 90], flipdim(BackgroundImage,1)); % Left half
 set(gca,'ydir','normal');

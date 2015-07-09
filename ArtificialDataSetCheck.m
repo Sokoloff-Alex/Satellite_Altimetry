@@ -1,0 +1,4 @@
+ArtificialDataSetCheck
+
+DataPool = SetGlobalVariables;
+

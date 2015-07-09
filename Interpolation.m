@@ -3,12 +3,14 @@
 % and generate interpolated map
 % by Alexandr Sokolov
 
-clear all
+clear all; 
+
+DataPool = SetGlobalVariables;
 
 
 %% load Parsed Data and Filtered/Computed data
-% Data = struct2array(load('Jason-1\Jason-1_110.mat'));
-Data = struct2array(load('Jason-1\Jason-1_110_filtered.mat'));
+% Data = struct2array(load([DataPool,'Jason-1\Jason-1_110.mat']));
+Data = struct2array(load([DataPool,'Jason-1\Jason-1_110_filtered.mat']));
 iValue = 21; % value of interest 16 = SSH
 
 %% make Grid
@@ -258,7 +260,7 @@ disp(['initial Master RefPoint, Lat: ',num2str(MasterRefPoint(1)),', Long: ', nu
     
     
 %% Save Results
-save('Jason-1\CounterMatrix.mat','CounterMatrix');
-save('Jason-1\DistanceMatrix.mat','DistanceMatrix');
-save('Jason-1\ValuesMatrix.mat','ValuesMatrix');
+save([DataPool,'Jason-1\CounterMatrix.mat','CounterMatrix']);
+save([DataPool,'Jason-1\DistanceMatrix.mat','DistanceMatrix']);
+save([DataPool,'Jason-1\ValuesMatrix.mat','ValuesMatrix']);
     

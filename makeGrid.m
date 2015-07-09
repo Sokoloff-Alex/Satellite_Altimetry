@@ -2,6 +2,8 @@ function[Grid,LatGrid,LongGrid] = makeGrid(longSize,latSize, factor)
 % make grid with AOI for each point
 % by Alexandr Sokolov
 
+DataPool = SetGlobalVariables;
+
 LatGrid = 70:-latSize:-70;
 LongGrid = 0:longSize:360;
 Arc_deg = zeros(size(LatGrid,2),1);
@@ -50,7 +52,7 @@ clear ArcLength
 % 
 % figure(1)
 % hold on;
-% BackgroundImage = imread('Results\map.jpg');
+% BackgroundImage = imread([[DataPool,'Results\map.jpg']);
 % imagesc([180 360+180], [-90 90], flipdim(BackgroundImage,1)); % Right half
 % imagesc([-180 180], [-90 90], flipdim(BackgroundImage,1));    % Left half
 % set(gca,'ydir','normal');

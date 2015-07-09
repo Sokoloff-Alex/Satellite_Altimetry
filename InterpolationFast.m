@@ -1,4 +1,4 @@
-function[Grid, CounterMatrix, DistanceMatrix, ValuesMatrix, Average] = InterpolationFast(Cycle,longSize, latSize, factor)
+function[Grid, CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Cycle,longSize, latSize, factor)
 % interpolate measurements using Grid 
 % and generate interpolated map
 % by Alexandr Sokolov
@@ -6,8 +6,7 @@ function[Grid, CounterMatrix, DistanceMatrix, ValuesMatrix, Average] = Interpola
 
 %% load Parsed Data and Filtered/Computed data
 
-Data = struct2array(load(['Jason-1\DataFiltered\Jason-1_',num2str(Cycle),'_filtered.mat']));
-iValue = 21; % value of interest 16 = SSH
+Data = struct2array(load([DataPool,'\Jason-1\DataFiltered\Jason-1_',num2str(Cycle),'_filtered.mat']));
 
 %% make Grid
 % [Grid] = makeGrid(longSize,latSize)
@@ -23,10 +22,12 @@ iValue = 21; % value of interest 16 = SSH
 % =======
 
 tic;
-MeanDepth = size(Data,1)/(length(LatGrid)*length(LongGrid));
+% MeanDepth = size(Data,1)/(length(LatGrid)*length(LongGrid))
 CounterMatrix  = zeros(size(Grid,1),size(Grid,2));        
-ValuesMatrix   = zeros(size(Grid,1),size(Grid,2),1200);  % for 10x10 grid usually <1000 points in single RefPoint 
-DistanceMatrix = zeros(size(Grid,1),size(Grid,2),1200);  
+SSHMatrix   = zeros(size(Grid,1),size(Grid,2),300);  % for 10x10 grid usually <1000 points in single RefPoint 
+SSHAnomalyMatrix  = zeros(size(Grid,1),size(Grid,2),300);  % for 10x10 grid usually <1000 points in single RefPoint 
+MDTMatrix   = zeros(size(Grid,1),size(Grid,2),300);  % for 10x10 grid usually <1000 points in single RefPoint 
+DistanceMatrix = zeros(size(Grid,1),size(Grid,2),300);  
 % CoordMatrix    = zeros(size(Grid,1),size(Grid,2),1200,2);     
 Distance = 100*ones(9,1);  % make huge, to overwrite with real distances and look for minimum                                  
 
@@ -45,7 +46,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
     Distance(1) = OrthodromeArcLength(Point, [MasterRefPoint(1),MasterRefPoint(2)]);
         if Distance(1) < MasterRefPoint(3) % point # 1 , center
             CounterMatrix(iLat,iLong) = CounterMatrix(iLat,iLong) + 1;
-            ValuesMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,iValue);
+            SSHMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,21);
+            SSHAnomalyMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,22);
+            MDTMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,23);
             DistanceMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Distance(1);
 %             CoordMatrix(iLat,iLong,CounterMatrix(iLat,iLong),:) = Point;
             %  === check 8 neighbours from 12'clock, clockwise ============
@@ -57,7 +60,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(2) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(2) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(2);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -73,7 +78,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(3) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(3) < CurrentRefPoint(3)                
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(3);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -88,7 +95,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             Distance(4) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
             if Distance(4) < CurrentRefPoint(3)
                 CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                 DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(4);
 %                 CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
             end            
@@ -103,7 +112,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(5) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(5) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(5);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -117,7 +128,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(6) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(6) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(6);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -133,7 +146,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(7) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(7) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(7);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -148,7 +163,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             Distance(8) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
             if Distance(8) < CurrentRefPoint(3)
                 CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                 DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(8);
 %                 CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
             end
@@ -164,7 +181,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(9) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(9) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    ValuesMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iValue);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(9);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -245,14 +264,18 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
 % Cut zeros
 maxCount = max(max(CounterMatrix));
 DistanceMatrix = DistanceMatrix(:,:,1:maxCount);
-ValuesMatrix   = ValuesMatrix(:,:,1:maxCount);
+SSHMatrix = SSHMatrix(:,:,1:maxCount);
+SSHAnomalyMatrix = SSHAnomalyMatrix(:,:,1:maxCount);
+MDTMatrix = MDTMatrix(:,:,1:maxCount);
 % CoordMatrix    = CoordMatrix(:,:,1:maxCount,:);
 
 % Save Results
-save(['Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat'],'CounterMatrix');
-save(['Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat'],'DistanceMatrix');
-save(['Jason-1\Processed\ValuesMatrix_',num2str(Cycle),'.mat'],'ValuesMatrix');
-% save(['Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat'],'CoordMatrix');
+save([DataPool,'Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat'],'CounterMatrix');
+save([DataPool,'Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat'],'DistanceMatrix');
+save([DataPool,'Jason-1\Processed\SSHMatrix_',num2str(Cycle),'.mat'],'SSHMatrix');
+save([DataPool,'Jason-1\Processed\SSHAnomalyMatrix_',num2str(Cycle),'.mat'],'SSHAnomalyMatrix');
+save([DataPool,'Jason-1\Processed\MDTMatrix_',num2str(Cycle),'.mat'],'MDTMatrix');
+% save([DataPool,'Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat'],'CoordMatrix');
 timeInterp = toc;
 disp(['Processing time :', num2str(timeInterp/60),' min']);
 

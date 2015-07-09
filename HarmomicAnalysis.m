@@ -1,5 +1,8 @@
 function[c] = HarmomicAnalysis(time,values,TrendName)
 % by Alexandr Sokolov
+
+DataPool = SetglobalVariables;
+
 Year = 365.25; % days
 CyclePeriod = 9.9156; % days 
 
@@ -63,7 +66,7 @@ h5 = c(11)*sin(2*pi/T5*(time)) + c(12)*cos(2*pi/T5*(time));
 Trend_harmonics = values - h1 - h2 - h3 - h4 - h5;
 
 a_mmPerYear = (c(2) * 1000) * (Year/CyclePeriod); % [m/cycle] -> [mm/year]
-SlopeTxt = ([' Global Trend: ',num2str(a_mmPerYear),' [mm/year]'])
+SlopeTxt = ([' Global Trend: ',num2str(a_mmPerYear),' [mm/year]']);
 
 if (~strcmp(TrendName,'no'))
     fig1 = figure;
@@ -111,8 +114,8 @@ if (~strcmp(TrendName,'no'))
     plot(time,Trend_harmonics,'.-b')
     plot(time,f1,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
-    ylabel('Global SSH, [m]')
-    legend('Global SSH timeseries - harmonics', 'Trend')
+    ylabel(['Global  ',TrendName,', [m]'])
+    legend(['Global ',TrendName,' timeseries - harmonics'], 'Trend')
     text('Position',[time(2), max(Trend_harmonics)],'String',SlopeTxt)
     xlim([min(time) max(time)])
     % ylim([min(Trend_harmonics) max(Trend_harmonics)])
@@ -126,7 +129,7 @@ if (~strcmp(TrendName,'no'))
     plot(time,f6,'m')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
-    legend('SSH timeseries','trend','approximation')
+    legend([TrendName,' timeseries'],'trend','approximation')
     xlim([min(time) max(time)])
     subplot(2,1,2)
     hold on
@@ -134,13 +137,13 @@ if (~strcmp(TrendName,'no'))
     plot(time,f1,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
-    legend('Global SSH timeseries - harmonics', 'Trend')
+    legend([TrendName,' timeseries - harmonics'],'Trend')
     text('Position',[time(2), max(Trend_harmonics)],'String',SlopeTxt)
     xlim([min(time) max(time)])
     %ylim([min(Trend_harmonics) max(Trend_harmonics)])
 
-    print(fig1, '-dpng',['Results\Trends\Trend_All_',TrendName,'.png']);
-    print(fig2, '-dpng',['Results\Trends\Trend_',TrendName,'.png']);
+    print(fig1, '-dpng',[DataPool,'Results\Trends\Trend_All_',TrendName,'.png']);
+    print(fig2, '-dpng',[DataPool,'Results\Trends\Trend_',TrendName,'.png']);
 end
 
 end

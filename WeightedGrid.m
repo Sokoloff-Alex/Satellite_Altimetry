@@ -3,6 +3,8 @@ function[SSH_weighted] = WeightedGrid(power, CounterMatrix, DistanceMatrix, Valu
 % save map and surface plots
 % by Alexandr Sokolov, 2015
 
+DataPool = SetGlobalVariables;
+
 
 SSH_weighted = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
 
@@ -31,14 +33,19 @@ end
 
 % SSH_weighted(iszero(SSH_weighted))=NaN
 
-save(['Jason-1\Results\SSH_',num2str(Cycle),'.mat'], 'SSH_weighted');
+save([DataPool,'Jason-1\Results\SSH_',num2str(Cycle),'.mat'], 'SSH_weighted');
+mkdir([DataPool,'Results\',num2str(Cycle)])
 
-mkdir(['Results\',num2str(Cycle)])
 FigGrid = figure(1);
 pcolor(flipud(CounterMatrix));
 legend(textLegend);
-print(FigGrid,'-dpng',['Results\',num2str(Cycle),'\GriddingMap_',num2str(Cycle),'.png']);
-print(FigGrid,'-dpng',['Results\Maps\GriddingMap_',num2str(Cycle),'.png']);
+shading flat
+set(gcf, 'renderer', 'zbuffer');
+h = colorbar;
+xlabel(h,'# of Points');
+title(['measurement points distribution into grid cells, cycle ',num2str(Cycle)])
+print(FigGrid,'-dpng',[DataPool,'Results\',num2str(Cycle),'\GriddingMap_',num2str(Cycle),'.png']);
+print(FigGrid,'-dpng',[DataPool,'Results\Maps\GriddingMap_',num2str(Cycle),'.png']);
 
 % FigGrid_Surf = figure(2);
 % meshz(flipud(CounterMatrix));
@@ -48,16 +55,23 @@ print(FigGrid,'-dpng',['Results\Maps\GriddingMap_',num2str(Cycle),'.png']);
 % close figure 2
 
 Fig_SSH_Map = figure(3);
+grid off
 pcolor(flipud(SSH_weighted));
 legend(textLegend);
-print(Fig_SSH_Map, '-dpng',['Results\',num2str(Cycle),'\SSH_Map_',num2str(Cycle),'.png']);
-print(Fig_SSH_Map, '-dpng',['Results\Maps\SSH_Map_',num2str(Cycle),'.png']);
+shading flat
+set(gcf, 'renderer', 'zbuffer');
+% colorbar
+h = colorbar;
+xlabel(h,'SSH, [m]');
+title(['SSH map, cycle ',num2str(Cycle),', linear weighting'])
+print(Fig_SSH_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Map_',num2str(Cycle),'.png']);
+print(Fig_SSH_Map, '-dpng',[DataPool,'Results\Maps\SSH_Map_',num2str(Cycle),'.png']);
 
 % Fig_SSH_Surf = figure(4)
 % surf(flipud(SSH_weighted));
 % legend(textLegend);
-% print(Fig_SSH_Surf, '-dpng',['Results\',num2str(Cycle),'\SSH_Surf_',num2str(Cycle),'.png']);
-% print(Fig_SSH_Surf, '-dpng',['Results\Maps\SSH_Surf_',num2str(Cycle),'.png']);
+% print(Fig_SSH_Surf, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Surf_',num2str(Cycle),'.png']);
+% print(Fig_SSH_Surf, '-dpng',[DataPool,'Results\Maps\SSH_Surf_',num2str(Cycle),'.png']);
 % close figure 4
 
 end

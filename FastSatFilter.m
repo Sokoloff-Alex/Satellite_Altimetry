@@ -2,6 +2,8 @@ function[AllRecFiltered] = FastSatFilter(SatelliteName,iflags,oflags, STD_thresh
 % Filter of satellite data using instrumental and orbital flags
 % by Alexandr Sokolov
 
+DataPool = SetGlobalVariables;
+
 disp(['Filtering Sat data: ', SatelliteName]);
 disp(['allowed iflags:     ', iflags]);
 disp(['allowed oflags:     ', oflags]);
@@ -13,20 +15,20 @@ disp(['abs(SSH - mssh) thr:', num2str(SSH_mssh_threshold)]);
 % find ASCII folder
 % SatelliteName = 'Jason-1';
 SatelliteASCIIDataFolder = ls ([SatelliteName,'\*ASCII']);
-SatelliteASCIIDataPath = [SatelliteName,'\',SatelliteASCIIDataFolder];
+SatelliteASCIIDataPath = [DataPool,SatelliteName,'\',SatelliteASCIIDataFolder];
 
 % find cycles
 % ls (SatelliteASCIIDataPath);
 ListOfCycles = ls (SatelliteASCIIDataPath);
 ListOfCycles = ListOfCycles(3:end,:);
 NumberOfCycles = size(ListOfCycles,1);
-FilteredFolder = [SatelliteName,'\',SatelliteName,'_ASCII_filtered'];
+FilteredFolder = [DataPool, SatelliteName,'\',SatelliteName,'_ASCII_filtered'];
 mkdir (FilteredFolder);
 AllRecFiltered = zeros(1000000,23);
 LastIndex = 0;
     for CycleIteration = 1:NumberOfCycles
         Cycle = ListOfCycles(CycleIteration,:);
-        ListOfFiles = ls ([SatelliteASCIIDataPath,'\',Cycle]);
+        ListOfFiles = ls ([DataPool,SatelliteASCIIDataPath,'\',Cycle]);
         ListOfFiles = ListOfFiles(3:end,:); % List of data files
 
         disp(['Starting filtering Cycle: ', Cycle]);
@@ -46,7 +48,7 @@ LastIndex = 0;
             LastIndex = LastIndex + LengthNew;
         disp([File_A_Name,' >> ',File_A_Name,'fil.txt']);
         end
-        CycleFileName = ['Jason-1\',SatelliteName,'_',num2str(Cycle),'_filtered','.mat'];
+        CycleFileName = [DataPool,'Jason-1\',SatelliteName,'_',num2str(Cycle),'_filtered','.mat'];
 %         save(CycleFileName,'AllRecFiltered');
     end
     AllRecFiltered( all(~AllRecFiltered,2), : ) = []; %Remove zero rows

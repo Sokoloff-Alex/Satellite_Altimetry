@@ -1,9 +1,11 @@
 function[TrendMap] = TrendEstimation(NanPercentThreshold ,filterThresold)
-%%  by Alexanr Sokolov
+%  by Alexanr Sokolov
+
+DataPool = SetGlobalVariables;
 
 tic;
 disp('Estimating Global Trend');
-SatelliteDataMapsPath = ['Jason-1\Results'];
+SatelliteDataMapsPath = [DataPool,'Jason-1\Results'];
 ListOfCycles = ls (SatelliteDataMapsPath);
 ListOfCycles = ListOfCycles(3:end-4,:)
 NumberOfCycles = size(ListOfCycles,1)

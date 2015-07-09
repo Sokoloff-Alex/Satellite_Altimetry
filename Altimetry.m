@@ -4,6 +4,8 @@
 % 20.01.2015
 % by Sokolov Alexandr, ESPACE, TUM
 
+DataPool = SetGlobalVariables;
+
 tic;
 % Read data from all satellite files and merge the data
 % [AllRecordsEnvsat] = ParseSatData('Envisat');
@@ -24,15 +26,18 @@ ParseAndFiltertime = toc;
 
 
 %% load Parsed Data and Filtered/Computed data
-AllRecords = struct2array(load('Jason-1\Data\Jason-1_110.mat'));
-AllRecFiltered = struct2array(load('Jason-1\Data\Jason-1_110_filtered.mat'));
+AllRecords = struct2array(load([DataPool,'\Jason-1\Data\Jason-1_110.mat']));
+AllRecFiltered = struct2array(load(['\Jason-1\DataFiltered\Jason-1_110_filtered.mat']));
+
+%% Statistics
+figStat = Statistics(AllRecFiltered);
 
 %% Plot Ground tracks
 range = [1:2000];
 figure(1)
 hold on;
 % Set background image
-BackgroundImage = imread('Results\map.jpg');
+BackgroundImage = imread([DataPool,'\Results\map.jpg']);
 imagesc([180 360+180], [-90 90], flipdim(BackgroundImage,1)); % Right half
 imagesc([-180 180], [-90 90], flipdim(BackgroundImage,1));    % Left half
 set(gca,'ydir','normal');
@@ -68,7 +73,9 @@ figMap = figure(2);
 scatter(AllRecFiltered(range,3)', AllRecFiltered(range,2)',[],AllRecFiltered(range,21)','filled');
 set(gca,'XLim', [0 360]);
 set(gca,'YLim', [-90 90]);
-print(figMap,'-dpng','Results\ScatterMap1.png');
+print(figMap,'-dpng',[DataPool,'\Results\ScatterMap1.png']);
+
+
 
 %% Plot of Statistics for cycle FILTERED
 xlimits = [0 size(AllRecFiltered,1)];
@@ -210,6 +217,12 @@ plot(y2,x_pdf2,'LineWidth',2)
 set(gca,'YLim', [-2 3]);
 
 
+%%
+subplot(1,3,1:2); 
+hold on
+plot(AllRecFiltered(:,21),'b');
+subplot(1,3,3)
+hist(AllRecFiltered(:,21),20)
 
 %% Plot of Statistics for cycle AllRecords
 std_sorted = sort(AllRecords(:,6),'descend');
@@ -235,7 +248,7 @@ set(gca,'XLim', [0 size(AllRecords,1)]);
 hold off;
 subplot(2,3,3); 
 hold on
-plot(y,x_pdf,'LineWidth',2)
+plot(y1,x_pdf,'LineWidth',2)
 set(gca,'YLim', [-0.5 4]);
 
 subplot(2,3,4:5); 

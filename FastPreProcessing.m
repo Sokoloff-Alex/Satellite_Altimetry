@@ -2,6 +2,8 @@ function[CycleRecords, CycleRecFiltered_IN, CycleRecFiltered_OUT] = FastPreProce
 % Read data from all satellite files and merge the data
 % Alexandr Sokolov
 
+DataPool = SetGlobalVariables;
+
 % ===== Find folder with RAW data =========================================
 % SatelliteName = 'Jason-1';
 disp(['Satellite Name:            ', SatelliteName]);
@@ -12,7 +14,7 @@ disp(['SWH threshold:             ', num2str(SWH_threshold)]);
 disp(['abs(SSH - mssh) threshold: ', num2str(SSH_mssh_threshold)]);
 
 SatelliteRawDataFolder = ls ([SatelliteName,'\*raw']);
-SatelliteRawDataPath = [SatelliteName,'\',SatelliteRawDataFolder];
+SatelliteRawDataPath = [DataPool,SatelliteName,'\',SatelliteRawDataFolder];
 
 % ===== Parse RMP file for description ====================================
 [NumberOfParameters, Parameter, LegthOfByte, DataType, Desimal, Unit, ShortCut, DescriptionOfParameter, MessageLenght] = ParseRMP(SatelliteName);
@@ -26,7 +28,7 @@ NumberOfCycles = size(ListOfCycles,1);
     for CycleIteration = 1:NumberOfCycles
         tic
         Cycle = ListOfCycles(CycleIteration,:);
-        CycleFileName = ['Jason-1\Data\',SatelliteName,'_',num2str(Cycle),'.mat'];
+        CycleFileName = [DataPool,'Jason-1\Data\',SatelliteName,'_',num2str(Cycle),'.mat'];
         if exist(CycleFileName, 'file') ~= 2
             disp(['Starting parsing Cycle: ', Cycle]);
             ListOfFiles = ls ([SatelliteRawDataPath,'\',Cycle]);
@@ -75,8 +77,8 @@ NumberOfCycles = size(ListOfCycles,1);
         end
         CycleRecFiltered_IN( all(~CycleRecFiltered_IN, 2),:) = []; %Remove zero rows    
         CycleRecFiltered_OUT(all(~CycleRecFiltered_OUT,2),:) = []; %Remove zero rows
-        mkdir([SatelliteName,'\DataFiltered\'])
-        CycleFileRecFiltered_IN = ['Jason-1\DataFiltered\',SatelliteName,'_',num2str(Cycle),'_filtered.mat'];
+        mkdir([SatelliteName,SatelliteName,'\DataFiltered\'])
+        CycleFileRecFiltered_IN = [SatelliteName,'Jason-1\DataFiltered\',SatelliteName,'_',num2str(Cycle),'_filtered.mat'];
         save(CycleFileRecFiltered_IN,'CycleRecFiltered_IN');   
         filteringTime = toc;
         disp(['Filtering of cycle ',Cycle,' finished: ', num2str(filteringTime), ' sec']);
