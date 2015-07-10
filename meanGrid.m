@@ -3,6 +3,8 @@ function[SSHMap, SSHAnomalyMap, MDTMap] = meanGrid(CounterMatrix, DistanceMatrix
 % save map and surface plots
 % by Alexandr Sokolov, 2015
 
+DataPool = SetGlobalVariables;
+DataPool = [DataPool,'\Test\'];
 
 SSHMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
 SSHAnomalyMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));

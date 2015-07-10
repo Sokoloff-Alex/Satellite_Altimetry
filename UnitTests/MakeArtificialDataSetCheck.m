@@ -22,6 +22,8 @@ SatelliteName = 'Jason-1';
 
 Cycle = '000';
 mkdir([DataPool,'\',SatelliteName,'\DataFiltered\'])
+mkdir([DataPool,SatelliteName,'\Products']);
+mkdir([DataPool,'Results\MapsFinal']);
 ArtificialDataSetPath = [DataPool,'\',SatelliteName,'\DataFiltered\',SatelliteName,'_',num2str(Cycle),'_filtered.mat'];
 save(ArtificialDataSetPath,'ArtificialDataSet');
 
@@ -34,11 +36,9 @@ textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2s
 [Grid,CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Cycle,longSize, latSize, factor); 
 
 %%
-
 addpath /UnitTests
-DataPool = SetGlobalVariables;
-DataPool  = [DataPool ,'Test']
-Test_meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
+
+meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
 
 %%
 addpath /UnitTests
