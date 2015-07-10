@@ -77,8 +77,8 @@ NumberOfCycles = size(ListOfCycles,1);
         end
         CycleRecFiltered_IN( all(~CycleRecFiltered_IN, 2),:) = []; %Remove zero rows    
         CycleRecFiltered_OUT(all(~CycleRecFiltered_OUT,2),:) = []; %Remove zero rows
-        mkdir([SatelliteName,SatelliteName,'\DataFiltered\'])
-        CycleFileRecFiltered_IN = [SatelliteName,'Jason-1\DataFiltered\',SatelliteName,'_',num2str(Cycle),'_filtered.mat'];
+        mkdir([DataPool,SatelliteName,SatelliteName,'\DataFiltered\'])
+        CycleFileRecFiltered_IN = [DataPool,SatelliteName,'Jason-1\DataFiltered\',SatelliteName,'_',num2str(Cycle),'_filtered.mat'];
         save(CycleFileRecFiltered_IN,'CycleRecFiltered_IN');   
         filteringTime = toc;
         disp(['Filtering of cycle ',Cycle,' finished: ', num2str(filteringTime), ' sec']);

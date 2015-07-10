@@ -3,6 +3,9 @@ function[Grid, CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMa
 % and generate interpolated map
 % by Alexandr Sokolov
 
+DataPool = SetGlobalVariables;
+DataPool = [DataPool,'Test\'];
+
 
 %% load Parsed Data and Filtered/Computed data
 

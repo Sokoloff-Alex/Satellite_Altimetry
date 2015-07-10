@@ -1,6 +1,7 @@
 %% ckeck fastest angular distance function
 clear all
 
+addpath /UnitTests
 
 Point1 = [35 45];
 Point2 = [35 135];
@@ -17,5 +18,8 @@ t3 = toc;
 disp(['D2: ', num2str(D2),'; B2: ', num2str(B2),'; ,t3 = ', num2str(t3)]);
 tic;
 
+if (D1 == D2 && B2 == B2)
+   disp('ok') 
+end
 
-
+rmpath /UnitTests

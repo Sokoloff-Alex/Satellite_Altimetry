@@ -2,9 +2,8 @@ function[DataPool] = SetGlobalVariables
 % load Global variables
 % by Sololov Alexandr
 
-%   specify in global Variable location of DataPool
-    
-    global DatePool;
+%   specify location of DataPool
+    global DateP
     DataPool = 'D:\TUM\Semester 2\Projects in Earth Oriented Space Science and Technology\Project\Project\DataPool\';
 
 

@@ -1,7 +1,10 @@
-function[SSHMap, SSHAnomalyMap, MDTMap] = meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend)
+function[SSHMap, SSHAnomalyMap, MDTMap] = Test_meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend)
 % make map of SSH using mean values on grid with uniform weighting for Fast Post-Processing
 % save map and surface plots
 % by Alexandr Sokolov, 2015
+
+DataPool = SetGlobalVariables;
+DataPool = [DataPool,'\Test\'];
 
 
 SSHMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
