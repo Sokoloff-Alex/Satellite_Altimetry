@@ -9,8 +9,10 @@ ListOfErrorMaps = ls ([DataPool,'Jason-1\Errormaps\*.mat'])
 NumberOfCycles = size(ListOfErrorMaps,1)
 
 LandWaterMask = importdata([DataPool,'landOceanMask\lwmask25.mat']);
+% LandWaterMask(LandWaterMask == 1) = NaN;
+% LandWaterMask(LandWaterMask == 0) = 10;
 
-% down-samlpe matrix of Land-Ocean Mask
+% Resize matrix
 LandWaterMaskReduced = nan(180,360);
 for row = 1:size(LandWaterMaskReduced,1) 
     for col = 1:size(LandWaterMaskReduced,2)
@@ -21,17 +23,19 @@ for row = 1:size(LandWaterMaskReduced,1)
     end
 end
 
+
+%
 LandWaterMaskReduced(LandWaterMaskReduced >= 0.5) = NaN;
-LandWaterMaskReduced(LandWaterMaskReduced < 0.5) = -1;
-save([DataPool,'landOceanMask\lwmask_1x1','.mat'], 'LandWaterMaskReduced');
+LandWaterMaskReduced(LandWaterMaskReduced < 0.5) = -10;
 
-LandWaterMaskNew = importdata([DataPool,'landOceanMask\lwmask_1x1.mat']);
-
-LandWaterMaskReduced = [LandWaterMaskReduced(:,end) LandWaterMaskReduced];
-%%
+% figure(1)
+% pcolor(flipud(LandWaterMaskReduced))
+% shading flat
+% set(gcf, 'renderer', 'zbuffer');
+%     
     
-for index = 35:110 % NumberOfCycles
-    tic;
+%
+for index = 1:1 % NumberOfCycles
     Cycle = ListOfErrorMaps(index,end-6:end-4);
     ErrorsData = importdata([DataPool,'Jason-1\errormaps\cross_point_',num2str(Cycle),'.mat']);
     Error = ErrorsData(:,5);
@@ -45,10 +49,9 @@ for index = 35:110 % NumberOfCycles
     [xq,yq] = meshgrid(0:0.5:360,-67:0.5:67);
     vq = F(xq,yq);
 
-    figErrorMap = figure(2);
-    set(gcf,'PaperPositionMode','auto')
-    set(figErrorMap, 'Position', [0 0 1900 1000])
+    fig1 = figure(2);
     hold on
+    title('Cross-track error analysis')
     set(gcf, 'renderer', 'zbuffer');    
     pc1 = pcolor(xq,yq+91,vq);
     shading flat
@@ -64,19 +67,50 @@ for index = 35:110 % NumberOfCycles
     set(ax2,'Color','w');
     caxis([0 ErrorLimit])
     xlim([0 360])
-    ylim([24 156])
+%     ylim([0 180])
+    ylim([0 180])
     ax = gca;
-    xlabel('Longitude, [deg]')
-    set(ax,'XTick',     [0:30:360])
-    ylabel('Latitude, [deg]')    
-    set(ax,'YTick',     [  0     24    50    70   90  110  130  156  180])
-    set(ax,'YTickLabel',{'-90','-66','-40','-20','0', '20','40','66','90'})
-    title(['Cross-track error analysis, Cycle ',num2str(Cycle)])
-    print(figErrorMap, '-dpng',[DataPool,'Results\Errormaps\Error_Map_',num2str(Cycle),'.png']);
+set(ax,'YTick',     [  0     30    50    70   90  110  130  150  180])
+set(ax,'YTickLabel',{'-90','-60','-40','-20','0', '20','40','60','90'})
+
+set(ax,'Xick',     [1:])
+% set(ax,'YTickLabel',{'0','-60','-40','-20','0', '20','40','60','90'})
+
+    
     hold off;
     
-    time = toc
-      
+    
+   
 end 
+
+%%
+
+   
+
+% plot error maps
+% 
+% fig = figure(2)
+% set(gcf,'PaperPositionMode','auto')
+% set(fig, 'Position', [0 0 1900 1000])
+% subplot(2,1,1)
+% pcolor(MapInitial)
+% shading flat
+% set(gcf, 'renderer', 'zbuffer');
+% h = colorbar('peer',gca); 
+% caxis([-5 5])
+% ylim([20 160])
+% xlabel(h,'Erorr, m');
+% title(['Error on crossing points, Cycle ',num2str(Cycle)])
+% 
+% subplot(2,1,2)
+% pcolor(MapApprox)
+% shading flat
+% set(gcf, 'renderer', 'zbuffer');
+% h = colorbar('peer',gca); 
+% caxis([-5 5])
+% ylim([20 160])
+% xlabel(h,'Erorr, m');
+% title(['Error on crossing points, mean smothing, ',num2str(iterations),' interations, Cycle ',num2str(Cycle)])
+% print(fig, '-dpng',[DataPool,'Results\Errormaps\Error_Map_',num2str(Cycle),'.png']);
 
 

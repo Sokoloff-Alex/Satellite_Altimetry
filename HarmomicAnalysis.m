@@ -1,7 +1,7 @@
 function[c] = HarmomicAnalysis(time,values,TrendName)
 % by Alexandr Sokolov
 
-DataPool = SetglobalVariables;
+DataPool = SetGlobalVariables;
 
 Year = 365.25; % days
 CyclePeriod = 9.9156; % days 

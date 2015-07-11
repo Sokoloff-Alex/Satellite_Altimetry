@@ -13,13 +13,13 @@ for index = 1:1 % NumberOfCycles
     Cycle = ListOfErrorMaps(index,end-6:end-4);
     ErrorsData = importdata([DataPool,'Jason-1\errormaps\cross_point_',num2str(Cycle),'.mat']);
     Error = ErrorsData(:,5);
-    ErrorLimit = 2;
+    ErrorLimit = 1;
     Error(Error > ErrorLimit) = ErrorLimit;
     Error(Error < -ErrorLimit) = -ErrorLimit;
-    Error = abs(Error);
+    Erro
     
-%     figure(2)
-%     scatter(ErrorsData(:,1),ErrorsData(:,2),Error(:,1));
+    figure(2)
+    scatter(ErrorsData(:,1),ErrorsData(:,2),Error(:,1));
 
     Map = nan(181, 361);
     MapApprox = nan(size(Map,1),size(Map,2));
@@ -38,7 +38,7 @@ for index = 1:1 % NumberOfCycles
     MapInitial = Map;
 
     % filling gaps with mean  operation
-    for iterations = 1:3
+    for iterations = 1:1
         for iLat = 2:size(Map,1)-1
             for iLong = 2:size(Map,2)-1
                 oldValue = Map(iLat, iLong);
@@ -72,7 +72,7 @@ pcolor(MapInitial)
 shading flat
 set(gcf, 'renderer', 'zbuffer');
 h = colorbar('peer',gca); 
-caxis([0 ErrorLimit])
+caxis([-2 2])
 ylim([20 160])
 xlabel(h,'Erorr, m');
 title(['Error on crossing points, Cycle ',num2str(Cycle)])
@@ -82,7 +82,7 @@ pcolor(MapApprox)
 shading flat
 set(gcf, 'renderer', 'zbuffer');
 h = colorbar('peer',gca); 
-caxis([0 ErrorLimit])
+caxis([-2 2])
 ylim([20 160])
 xlabel(h,'Erorr, m');
 title(['Error on crossing points, mean smothing, ',num2str(iterations),' interations, Cycle ',num2str(Cycle)])

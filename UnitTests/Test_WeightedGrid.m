@@ -1,10 +1,19 @@
 function[SSH_weighted] = WeightedGrid(power, CounterMatrix, DistanceMatrix, ValuesMatrix, Cycle, textLegend)
-% make map of SSH using mean values on grid with uniform weighting for Fast Post-Processing
+% make map of SSH using weigthed values on grid with wariable weigthing [power]for Fast Post-Processing
 % save map and surface plots
 % by Alexandr Sokolov, 2015
 
+% power = 1 => linear weigthing
+% power = 2 => quadratic
+
+% difference to meanGrid function in the scale of output
+% instead of original scale, used adopted to artificial
+% dataset range [0 4] for all
+
+cd ../;
 DataPool = SetGlobalVariables;
-DataPool = [DataPool,'\Test\']
+DataPool = [DataPool,'Test\'];
+cd UnitTests;
 
 SSH_weighted = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
 

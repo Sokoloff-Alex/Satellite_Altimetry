@@ -3,9 +3,14 @@ function[SSHMap, SSHAnomalyMap, MDTMap] = Test_meanGrid(CounterMatrix, DistanceM
 % save map and surface plots
 % by Alexandr Sokolov, 2015
 
-DataPool = SetGlobalVariables;
-DataPool = [DataPool,'\Test\'];
+% difference to meanGrid function in the scale of output
+% instead of original scale, used adopted to artificial
+% dataset range [0 4] for all
 
+cd ../;
+DataPool = SetGlobalVariables;
+DataPool = [DataPool,'Test\'];
+cd UnitTests;
 
 SSHMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
 SSHAnomalyMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
@@ -19,6 +24,7 @@ for row = 1:size(CounterMatrix,1)
        MDTMap(row,column) = sum([MDTMatrix(row,column,:)]) / CounterMatrix(row,column);  
    end    
 end
+
 
 save([DataPool,'Jason-1\Products\SSHMap_',num2str(Cycle),'.mat'], 'SSHMap');
 save([DataPool,'Jason-1\Products\SSHAnomalyMap_',num2str(Cycle),'.mat'], 'SSHAnomalyMap');
@@ -51,7 +57,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-105 85])
+caxis([0 4])
 xlabel(h,'SSH, [m]');
 title(['SSH map, cycle ',num2str(Cycle),', no weighting'])
 % print(Fig_SSH_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Map_',num2str(Cycle),'.png']);
@@ -66,7 +72,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2])
+caxis([0 4])
 xlabel(h,'SSH Anomaly, [m]');
 title(['SSH Anomaly map, cycle ',num2str(Cycle),', no weighting'])
 % print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Anomaly_Map_',num2str(Cycle),'.png']);
@@ -81,7 +87,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2.5])
+caxis([0 4])
 xlabel(h,'SMDT, [m]');
 title(['MDT map, cycle ',num2str(Cycle),', no weighting'])
 % print(Fig_MDT_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\MDT_Map_',num2str(Cycle),'.png']);
@@ -97,7 +103,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-105 85])
+caxis([0 4])
 xlabel(h,'SSH, [m]');
 title(['SSH map, cycle ',num2str(Cycle),', no weighting'])
 
@@ -108,7 +114,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2])
+caxis([0 4])
 xlabel(h,'SSH Anomaly, [m]');
 title(['SSH Anomaly map, cycle ',num2str(Cycle),', no weighting'])
 
@@ -119,7 +125,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2.5])
+caxis([0 4])
 xlabel(h,'SMDT, [m]');
 title(['MDT map, cycle ',num2str(Cycle),', no weighting'])
 

@@ -1,15 +1,17 @@
-function[Grid, CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Cycle,longSize, latSize, factor)
+function[Grid, CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Data,longSize, latSize, factor, valuesOfInterest)
 % interpolate measurements using Grid 
 % and generate interpolated map
 % by Alexandr Sokolov
 
-DataPool = SetGlobalVariables;
-DataPool = [DataPool,'Test\'];
+% DataPool = SetGlobalVariables;
+% DataPool = [DataPool,'Test\'];
 
+iSSH = valuesOfInterest(1);
+iSSHAnomaly = valuesOfInterest(2);
+iMDT = valuesOfInterest(3);
 
-%% load Parsed Data and Filtered/Computed data
-
-Data = struct2array(load([DataPool,'\Jason-1\DataFiltered\Jason-1_',num2str(Cycle),'_filtered.mat']));
+% %% load Parsed Data and Filtered/Computed data
+% Data = struct2array(load([DataPool,'\Jason-1\DataFiltered\Jason-1_',num2str(Cycle),'_filtered.mat']));
 
 %% make Grid
 % [Grid] = makeGrid(longSize,latSize)
@@ -39,19 +41,18 @@ iEnd = size(Data,1);
 InitialPoint = [Data(iStart,2),Data(iStart,3)];
 [iLat, iLong] =  SearchForNearestPoint(LatGrid, LongGrid, InitialPoint);
 MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
-% disp(['initial Master RefPoint, iLat: ',num2str(iLat),', iLong: ',
-% num2str(iLong)]);
-disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
-% disp(['initial Master RefPoint, Lat: ',num2str(MasterRefPoint(1)),', Long: ', num2str(MasterRefPoint(2)), '; Rmin = ',num2str(MasterRefPoint(3))])
+ disp(['initial Master RefPoint, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)]);
+% disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
+%  disp(['initial Master RefPoint, Lat: ',num2str(MasterRefPoint(1)),', Long: ', num2str(MasterRefPoint(2)), '; Rmin = ',num2str(MasterRefPoint(3))]);
        
     for index = iStart:iEnd  % iterate first 100 points
     Point = [Data(index,2),Data(index,3)];
     Distance(1) = OrthodromeArcLength(Point, [MasterRefPoint(1),MasterRefPoint(2)]);
         if Distance(1) < MasterRefPoint(3) % point # 1 , center
             CounterMatrix(iLat,iLong) = CounterMatrix(iLat,iLong) + 1;
-            SSHMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,21);
-            SSHAnomalyMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,22);
-            MDTMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,23);
+            SSHMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,iSSH);
+            SSHAnomalyMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,iSSHAnomaly);
+            MDTMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Data(index,iMDT);
             DistanceMatrix(iLat,iLong,CounterMatrix(iLat,iLong)) = Distance(1);
 %             CoordMatrix(iLat,iLong,CounterMatrix(iLat,iLong),:) = Point;
             %  === check 8 neighbours from 12'clock, clockwise ============
@@ -63,9 +64,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(2) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(2) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(2);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -81,9 +82,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(3) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(3) < CurrentRefPoint(3)                
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(3);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -98,9 +99,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             Distance(4) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
             if Distance(4) < CurrentRefPoint(3)
                 CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                 DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(4);
 %                 CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
             end            
@@ -115,9 +116,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(5) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(5) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(5);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -131,9 +132,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(6) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(6) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(6);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -149,9 +150,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(7) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(7) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(7);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -166,9 +167,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             Distance(8) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
             if Distance(8) < CurrentRefPoint(3)
                 CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                 DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(8);
 %                 CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
             end
@@ -184,9 +185,9 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                 Distance(9) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
                 if Distance(9) < CurrentRefPoint(3)
                     CounterMatrix( cLat,cLong) = CounterMatrix(cLat,cLong) + 1;
-                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,21);
-                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,22);
-                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,23);
+                    SSHMatrix(  cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSH);
+                    SSHAnomalyMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iSSHAnomaly);
+                    MDTMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Data(index,iMDT);
                     DistanceMatrix(cLat,cLong,CounterMatrix(cLat,cLong)) = Distance(9);
 %                     CoordMatrix(cLat,cLong,CounterMatrix(cLat,cLong),:) = Point;
                 end
@@ -194,11 +195,11 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             
             % ===== Check new best MasterRefPoint
             [M,I] = min(Distance(:));
-%             disp(['Min distance to Master RefPoint, index:',num2str(I)])
+%              disp(['Min distance to Master RefPoint, index:',num2str(I)])
             Distance = 100*ones(9,1); % clean vector for new iteration
             
             if I  ~= 1 %  if I == 1 => MasterRefPoint remains
-%                     disp(['Iteration: ', num2str(index), '; I = ', num2str(I)])
+                     disp(['Iteration: ', num2str(index), '; I = ', num2str(I)])
                switch I
                     case 2
                         iLat =  iLat  - 1;
@@ -214,7 +215,7 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                         iLong = iLong + 1;
                         if iLong > length(LongGrid)
                             iLong = 1;
-%                             disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
+                             disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
                         end
 %                         disp(['go East, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 5
@@ -238,7 +239,7 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
                         iLong = iLong - 1;
                         if iLong == 0
                            iLong = length(LongGrid); 
-%                            disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
+                            disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
                         end
 %                         disp(['go West, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 9
@@ -254,13 +255,13 @@ disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
             end 
             MasterRefPoint = Grid(iLat,iLong,:); % reinitialize Master RefPoint
         else
-%             disp([num2str(index),'; Process Point  : Lat: ', num2str(Point(1)),' , Long: ',num2str(Point(2))]);
-%             disp([num2str(index),'; MasterPoint OLD: Lat: ', num2str(MasterRefPoint(1)),'      , Long: ',num2str(MasterRefPoint(2))]);
-%             disp(['Previous: iLat: ',num2str(iLat),'; iLong: ',num2str(iLong)]);
+             disp([num2str(index),'; Process Point  : Lat: ', num2str(Point(1)),' , Long: ',num2str(Point(2))]);
+             disp([num2str(index),'; MasterPoint OLD: Lat: ', num2str(MasterRefPoint(1)),'      , Long: ',num2str(MasterRefPoint(2))]);
+             disp(['Previous: iLat: ',num2str(iLat),'; iLong: ',num2str(iLong)]);
             [iLat, iLong] =  SearchForNearestPoint(LatGrid, LongGrid, Point);
             MasterRefPoint = Grid(iLat,iLong,:); % reinitialize Master RefPoint
-%             disp([num2str(index),'; MasterPoint NEW: Lat: ', num2str(MasterRefPoint(1)),' ; Long: ',num2str(MasterRefPoint(2))]);
-            index = index - 1; % roll back index
+             disp([num2str(index),'; MasterPoint NEW: Lat: ', num2str(MasterRefPoint(1)),' ; Long: ',num2str(MasterRefPoint(2))]);
+%             index = index - 1; % roll back index
         end   
     end
 
@@ -273,12 +274,17 @@ MDTMatrix = MDTMatrix(:,:,1:maxCount);
 % CoordMatrix    = CoordMatrix(:,:,1:maxCount,:);
 
 % Save Results
-save([DataPool,'Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat'],'CounterMatrix');
-save([DataPool,'Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat'],'DistanceMatrix');
-save([DataPool,'Jason-1\Processed\SSHMatrix_',num2str(Cycle),'.mat'],'SSHMatrix');
-save([DataPool,'Jason-1\Processed\SSHAnomalyMatrix_',num2str(Cycle),'.mat'],'SSHAnomalyMatrix');
-save([DataPool,'Jason-1\Processed\MDTMatrix_',num2str(Cycle),'.mat'],'MDTMatrix');
-% save([DataPool,'Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat'],'CoordMatrix');
+% try
+%     save([DataPool,'Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat'],'CounterMatrix');
+%     save([DataPool,'Jason-1\Processed\DistanceMatrix_',num2str(Cycle),'.mat'],'DistanceMatrix');
+%     save([DataPool,'Jason-1\Processed\SSHMatrix_',num2str(Cycle),'.mat'],'SSHMatrix');
+%     save([DataPool,'Jason-1\Processed\SSHAnomalyMatrix_',num2str(Cycle),'.mat'],'SSHAnomalyMatrix');
+%     save([DataPool,'Jason-1\Processed\MDTMatrix_',num2str(Cycle),'.mat'],'MDTMatrix');
+%     % save([DataPool,'Jason-1\Processed\CoordMatrix_',num2str(Cycle),'.mat'],'CoordMatrix');
+% catch
+%    disp('Error : Files are not saved to the DataPool'); 
+% end
+
 timeInterp = toc;
 disp(['Processing time :', num2str(timeInterp/60),' min']);
 

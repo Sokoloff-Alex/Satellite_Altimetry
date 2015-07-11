@@ -119,7 +119,7 @@ xlabel(h,'m/cycle')
 %% filter
 TrendMapScaled = TrendMap * 1000 * (Year/CyclePeriod); % units change
 TrendMapScaledFiltered = TrendMapScaled;
-Limit = 200;
+Limit = 250;
 for row = 1:size(TrendMap,1)
     for column = 1:size(TrendMap,2)
         if abs(TrendMapScaledFiltered(row,column)) > Limit%  filterThresold
@@ -147,7 +147,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 h = colorbar
 xlabel(h, '[mm/year]');
-caxis([-100 100])
+caxis([-40 250])
 
 %%
 
@@ -172,7 +172,7 @@ colorbar
 h = colorbar;
 xlabel(h,[MapType(1:end-8),' change, [mm/year]']);
 title(['Regional chages of ',MapType(1:end-8)])
-caxis([-50 155])
+caxis([-40 250])
 
 %%  Estimation of Trend FAST
 tic
@@ -263,7 +263,7 @@ surf(flipud(TrendMapScaledFiltered))
 close all; clc
 
 % 60 days smoothing
-valuesAll = Matrix(10,305,:);
+valuesAll = Matrix(30,130,:);
 valuesAll = valuesAll(:);
 NaNPercent = sum(isnan(valuesAll))/(size(valuesAll,1))*100; % NaN's percent
 

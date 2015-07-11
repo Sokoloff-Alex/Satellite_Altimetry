@@ -4,7 +4,7 @@ function[DataPool] = SetGlobalVariables
 
 %   specify in global Variable location of DataPool
     
-    global DatePool;
+    global DataPool;
     DataPool = 'D:\TUM\Semester 2\Projects in Earth Oriented Space Science and Technology\Project\Project\DataPool\';
 
 

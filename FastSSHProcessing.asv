@@ -36,7 +36,7 @@ for Cycle = 110:110
 end
 TimeInterpolation = toc;
 
-%% make mean weithing
+%%
 close all; close all; clc;
 longSize = 1;
 latSize  = 1;  
