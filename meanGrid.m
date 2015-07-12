@@ -21,7 +21,7 @@ end
 
 % prepate ErrorMap
 
-  ErrorsData = importdata([DataPool,'Jason-1\errormaps\cross_point_',num2str(Cycle),'.mat']);
+ErrorsData = importdata([DataPool,'Jason-1\errormaps\cross_point_',num2str(Cycle),'.mat']);
 Error = ErrorsData(:,5);
 ErrorLimit = 2;
 Error(Error > ErrorLimit) = ErrorLimit;
@@ -60,7 +60,6 @@ set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
 set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
 ylim([4 141-4])
 title(['measurement points distribution into grid cells, cycle ',num2str(Cycle)])
-% print(FigGrid1,'-dpng',[DataPool,'Results\',num2str(Cycle),'\GriddingMap_',num2str(Cycle),'.png']);
 print(FigGrid1,'-dpng',[DataPool,'Results\MapsFinal\GriddingMap_',num2str(Cycle),'.png']);
  
 Fig_SSH_Map = figure(2);
@@ -79,10 +78,9 @@ xlabel('Longitude, [deg]')
 set(ax,'XTick',     [0:30:360])
 ylabel('Latitude, [deg]')    
 ylim([4 141-4])
-set(ax,'YTick',     [  0     24    50    70   90  110  130  156  180])
-set(ax,'YTickLabel',{'-90','-66','-40','-20','0', '20','40','66','90'})
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
 title(['SSH map, cycle ',num2str(Cycle),', mean weighting'])
-% print(Fig_SSH_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Map_',num2str(Cycle),'.png']);
 print(Fig_SSH_Map, '-dpng',[DataPool,'Results\MapsFinal\SSH_Map_',num2str(Cycle),'.png']);
 
 Fig_SSHAnomaly_Map = figure(3);
@@ -94,7 +92,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2])
+caxis([-0.8 0.8])
 xlabel(h,'SSH Anomaly, [m]');
 ax = gca;
 xlabel('Longitude, [deg]')
@@ -104,7 +102,6 @@ ylim([4 141-4])
 set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
 set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
 title(['SSH Anomaly map, cycle ',num2str(Cycle),', mean weighting'])
-% print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Anomaly_Map_',num2str(Cycle),'.png']);
 print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\MapsFinal\SSH_Anomaly_Map_',num2str(Cycle),'.png']);
 
 Fig_MDT_Map = figure(4);
@@ -126,7 +123,6 @@ ylim([4 141-4])
 set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
 set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
 title(['MDT map, cycle ',num2str(Cycle),', mean weighting'])
-% print(Fig_MDT_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\MDT_Map_',num2str(Cycle),'.png']);
 print(Fig_MDT_Map, '-dpng',[DataPool,'Results\MapsFinal\MDT_',num2str(Cycle),'.png']);
 
 
@@ -164,10 +160,12 @@ LandWaterMask = importdata([DataPool,'landOceanMask\lwmask_1x1.mat']);
     print(figErrorMap, '-dpng',[DataPool,'Results\Errormaps\Error_Map_',num2str(Cycle),'.png']);
     hold off;
       
+%%%%
 
 figCombination = figure(5);
 set(gcf,'PaperPositionMode','auto')
 set(figCombination, 'Position', [0 0 1900 1000])
+
 subplot(2,4,1:2)
 pcolor(flipud(SSHMap));
 % % legend(textLegend);
@@ -193,7 +191,7 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([-2 2])
+caxis([-0.8 0.8])
 xlabel(h,'SSH Anomaly, [m]');
 ax = gca;
 xlabel('Longitude, [deg]')
@@ -265,8 +263,9 @@ subplot(2,4,7:8)
 % ylim([4 141-4])
 % set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
 % set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
-% title(['measurement points distribution into grid cells, cycle ',num2str(Cycle)])
-% print(figCombination,'-dpng',[DataPool,'Results\MapsFinal\figCombiMap_',num2str(Cycle),'.png']);
+%  title(['measurement points distribution into grid cells, cycle ',num2str(Cycle)])
+
+print(figCombination,'-dpng',[DataPool,'Results\Maps\figCombiMap_',num2str(Cycle),'.png']);
 
 
 end

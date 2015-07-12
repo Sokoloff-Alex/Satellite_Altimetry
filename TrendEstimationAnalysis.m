@@ -14,9 +14,9 @@ CyclePeriod = 9.9156; % days
 tic;
 disp('Estimating Global Trend');
 SatelliteDataMapsPath = [DataPool,'Jason-1\Products'];
-% MapType = ['SSHMap*.mat'];
-  MapType = ['MDTMap*.mat'];
-%  MapType = ['SSHAnomalyMap*.mat'];
+ MapType = ['SSHMap*.mat'];
+%  MapType = ['MDTMap*.mat'];
+%   MapType = ['SSHAnomalyMap*.mat'];
 ListOfCycles = ls ([SatelliteDataMapsPath,'\',MapType])
 NumberOfCycles = size(ListOfCycles,1)
 
@@ -60,18 +60,18 @@ for index = 1:((size(Matrix,3)-SmothingSize)+1)
 end
 timeVectorSmoothed = timeVectorAll(4:end-3);
 
-%% Global Trend
+% Global Trend
 
-[GlobalTrendSlopeSmoothed] = HarmomicAnalysis(timeVectorSmoothed, GlobalTrendSm,MapType(1:end-8));
+% [GlobalTrendSlopeSmoothed] = HarmomicAnalysis(timeVectorSmoothed, GlobalTrendSm,MapType(1:end-8));
 
 [GlobalTrendSlopeSmoothed_Weighted] = HarmomicAnalysis(timeVectorSmoothed, GlobalTrendSmWeighted,MapType(1:end-8));
 
 %% FFT ok
-% fftAnalysis(x,                y,         fmin, fmax)
-fftAnalysis(timeVectorAll,      GlobalTrend,           0, 0.2)
-fftAnalysis(timeVectorSmoothed, GlobalTrendSm,         0, 0.2)
-fftAnalysis(timeVectorAll,      GlobalTrendWeighted,   0, 0.2)
-fftAnalysis(timeVectorSmoothed, GlobalTrendSmWeighted, 0, 0.2)
+% % fftAnalysis(x,                y,         fmin, fmax)
+% fftAnalysis(timeVectorAll,      GlobalTrend,           0, 0.2)
+% fftAnalysis(timeVectorSmoothed, GlobalTrendSm,         0, 0.2)
+% fftAnalysis(timeVectorAll,      GlobalTrendWeighted,   0, 0.2)
+% fftAnalysis(timeVectorSmoothed, GlobalTrendSmWeighted, 0, 0.2)
 
 %%  Estimation of Trend FAST
 tic
@@ -105,18 +105,9 @@ end
 
 timeEstimation = toc;
 disp(['Estimation time: ', num2str(timeEstimation), ' sec']);
-
-
-%%
-pcolor(flipud(Matrix(:,:,2)))    
-shading flat
- set(gcf, 'renderer', 'zbuffer');
-h = colorbar('peer',gca); 
-% caxis([-0.03 0.03])
-xlabel(h,'m/cycle')
     
     
-%% filter
+% filter and plot results
 TrendMapScaled = TrendMap * 1000 * (Year/CyclePeriod); % units change
 TrendMapScaledFiltered = TrendMapScaled;
 Limit = 250;
@@ -132,8 +123,10 @@ for row = 1:size(TrendMap,1)
     end
 end
 
-% close all
-figure(1)
+% plot maps
+fig1 = figure(1)
+set(gcf,'PaperPositionMode','auto')
+set(fig1, 'Position', [0 0 1900 1000])
 subplot(2,1,1)
 pcolor(flipud(TrendMapScaled))
 title(['Regional chages of ',MapType(1:end-8)])
@@ -141,13 +134,51 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 h = colorbar
 xlabel(h, '[mm/year]');
+ax = gca;
+xlabel('Longitude, [deg]')
+set(ax,'XTick',     [0:30:360])
+ylabel('Latitude, [deg]')    
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
+ylim([4 141-4])
 subplot(2,1,2)
 pcolor(flipud(TrendMapScaledFiltered))
 shading flat
 set(gcf, 'renderer', 'zbuffer');
 h = colorbar
 xlabel(h, '[mm/year]');
-caxis([-40 250])
+ax = gca;
+xlabel('Longitude, [deg]')
+set(ax,'XTick',     [0:30:360])
+ylabel('Latitude, [deg]')    
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
+ylim([4 141-4])
+caxis([-100 100])
+title(['Regional chages of ',MapType(1:end-8),', rescaled']);
+print(fig1,'-dpng',[DataPool,'Results\Trends\Maps\DoublePlots\',MapType(1:end-8),'_change.png']);
+
+% 
+figTrend = figure(2)
+set(gcf,'PaperPositionMode','auto')
+set(figTrend, 'Position', [0 0 1900 1000])
+pcolor(flipud(TrendMapScaledFiltered))
+shading flat
+set(gcf, 'renderer', 'zbuffer');
+colorbar
+h = colorbar;
+xlabel(h,[MapType(1:end-8),' change, [mm/year]']);
+title(['Regional chages of ',MapType(1:end-8)])
+caxis([-100 100])
+ax = gca;
+xlabel('Longitude, [deg]')
+set(ax,'XTick',     [0:30:360])
+ylabel('Latitude, [deg]')    
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
+ylim([4 141-4])
+print(figTrend,'-dpng',[DataPool,'Results\Trends\Maps\',MapType(1:end-8),'_change.png']);
+ 
 
 %%
 
@@ -163,16 +194,7 @@ GlobalTrendSm_3 = nansum(nansum(TrendMapScaledFiltered)) / (dim - sum(sum(isnan(
 GlobalTrendSmWeighted_3 = nansum(nansum(TrendMapScaledFiltered.*(cosd(lat)'*ones(1,size(TrendMapScaledFiltered,2))))) / (dim - sum(sum(isnan(TrendMapScaledFiltered))))
 
 
-%% 
-figure(2)
-pcolor(flipud(TrendMapScaledFiltered))
-shading flat
-set(gcf, 'renderer', 'zbuffer');
-colorbar
-h = colorbar;
-xlabel(h,[MapType(1:end-8),' change, [mm/year]']);
-title(['Regional chages of ',MapType(1:end-8)])
-caxis([-40 250])
+
 
 %%  Estimation of Trend FAST
 tic
@@ -262,8 +284,19 @@ surf(flipud(TrendMapScaledFiltered))
 %% Plot arbitrary samples
 close all; clc
 
+% comvert coordinates [deg] into indexis on gridMapMatrix
+
+Lat = 40;
+Long = 200;
+CooridatesOfPoint = ['Lat ',num2str(Lat),' , Long ', num2str(Long),];
+disp(CooridatesOfPoint)
+
+iLong = round((Long/360)*size(Matrix,2));
+iLat = round((Lat+70)/140*size(Matrix,1));
+
+
 % 60 days smoothing
-valuesAll = Matrix(30,130,:);
+valuesAll = Matrix(iLat,iLong,:);
 valuesAll = valuesAll(:);
 NaNPercent = sum(isnan(valuesAll))/(size(valuesAll,1))*100; % NaN's percent
 
@@ -289,5 +322,5 @@ if NaNPercent <= NanPercentThreshold  % Number of NaN's
     end
     values = values(1:counter);
     timeVector = timeVector(1:counter);
-    HarmomicAnalysis(timeVector, values,'selected');
+    HarmomicAnalysis(timeVector, values,CooridatesOfPoint);
 end 

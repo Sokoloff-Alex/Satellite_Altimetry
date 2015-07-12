@@ -70,6 +70,8 @@ SlopeTxt = ([' Global Trend: ',num2str(a_mmPerYear),' [mm/year]']);
 
 if (~strcmp(TrendName,'no'))
     fig1 = figure;
+    set(gcf,'PaperPositionMode','auto')
+    set(fig1, 'Position', [0 0 1900 1000])
     subplot(4,2,1)
     hold on
     plot(time,values,'.-b')
@@ -114,14 +116,18 @@ if (~strcmp(TrendName,'no'))
     plot(time,Trend_harmonics,'.-b')
     plot(time,f1,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
-    ylabel(['Global  ',TrendName,', [m]'])
-    legend(['Global ',TrendName,' timeseries - harmonics'], 'Trend')
+    ylabel('change [m]')
+    legend(['Timeseries without harmonics'], 'Trend')
     text('Position',[time(2), max(Trend_harmonics)],'String',SlopeTxt)
+    text('Position',[time(2), min(Trend_harmonics)],'String',TrendName)
     xlim([min(time) max(time)])
     % ylim([min(Trend_harmonics) max(Trend_harmonics)])
 
-
+    
+    
     fig2= figure;
+    set(gcf,'PaperPositionMode','auto')
+    set(fig2, 'Position', [0 0 1900 1000])
     subplot(2,1,1)
     hold on
     plot(time,values,'.-b')
@@ -129,7 +135,7 @@ if (~strcmp(TrendName,'no'))
     plot(time,f6,'m')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
-    legend([TrendName,' timeseries'],'trend','approximation')
+    legend('timeseries','trend','approximation')
     xlim([min(time) max(time)])
     subplot(2,1,2)
     hold on
@@ -137,8 +143,10 @@ if (~strcmp(TrendName,'no'))
     plot(time,f1,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
-    legend([TrendName,' timeseries - harmonics'],'Trend')
+    legend('Timeseries - harmonics','Trend')
+    
     text('Position',[time(2), max(Trend_harmonics)],'String',SlopeTxt)
+    text('Position',[time(2), min(Trend_harmonics)],'String',TrendName)    
     xlim([min(time) max(time)])
     %ylim([min(Trend_harmonics) max(Trend_harmonics)])
 
