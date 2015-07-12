@@ -4,6 +4,7 @@ function[SSHMap, SSHAnomalyMap, MDTMap] = meanGrid(CounterMatrix, DistanceMatrix
 % by Alexandr Sokolov, 2015
 
 DataPool = SetGlobalVariables;
+LandWaterMask = importdata([DataPool,'landOceanMask\lwmask_1x1.mat']);
 
 
 SSHMap = zeros(size(DistanceMatrix,1),size(DistanceMatrix,2));
@@ -126,7 +127,6 @@ title(['MDT map, cycle ',num2str(Cycle),', mean weighting'])
 print(Fig_MDT_Map, '-dpng',[DataPool,'Results\MapsFinal\MDT_',num2str(Cycle),'.png']);
 
 
-LandWaterMask = importdata([DataPool,'landOceanMask\lwmask_1x1.mat']);
 
   
 %%

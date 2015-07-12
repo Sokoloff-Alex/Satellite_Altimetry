@@ -15,7 +15,7 @@ longSize = 1;
 latSize  = 1;  
 factor = 1.6;
 textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2str(factor)];
-for Cycle = 110:110
+for Cycle = 110:115
     
     % load Parsed Data and Filtered/Computed data
     DataPool = SetGlobalVariables;
@@ -36,7 +36,7 @@ for Cycle = 110:110
 end
 TimeInterpolation = toc;
 
-%% make mean weithing
+% make mean weithing
 close all; close all; clc;
 DataPool = SetGlobalVariables;
 longSize = 1;
@@ -44,7 +44,7 @@ latSize  = 1;
 factor = 1.6;
 textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2str(factor)];
 
-for Cycle = 110:112
+for Cycle = 110:116
     % Load Data
     CounterMatrix = struct2array(load([DataPool,'\Jason-1\Processed\CounterMatrix_',num2str(Cycle),'.mat']));
     SSHMatrix = struct2array(load([DataPool,'\Jason-1\Processed\SSHMatrix_',num2str(Cycle),'.mat']));

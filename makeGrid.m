@@ -4,7 +4,7 @@ function[Grid,LatGrid,LongGrid] = makeGrid(longSize,latSize, factor)
 
 DataPool = SetGlobalVariables;
 
-LatGrid = 90:-latSize:-90;
+LatGrid = 70:-latSize:-70;
 LongGrid = 0:longSize:360;
 Arc_deg = zeros(size(LatGrid,2),1);
 

@@ -41,7 +41,7 @@ iEnd = size(Data,1);
 InitialPoint = [Data(iStart,2),Data(iStart,3)];
 [iLat, iLong] =  SearchForNearestPoint(LatGrid, LongGrid, InitialPoint);
 MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
- disp(['initial Master RefPoint, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)]);
+ % disp(['initial Master RefPoint, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)]);
 % disp(['Starting interpolation of Cycle: ',num2str(Cycle)]);
 %  disp(['initial Master RefPoint, Lat: ',num2str(MasterRefPoint(1)),', Long: ', num2str(MasterRefPoint(2)), '; Rmin = ',num2str(MasterRefPoint(3))]);
        
@@ -199,7 +199,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
             Distance = 100*ones(9,1); % clean vector for new iteration
             
             if I  ~= 1 %  if I == 1 => MasterRefPoint remains
-                     disp(['Iteration: ', num2str(index), '; I = ', num2str(I)])
+                     % disp(['Iteration: ', num2str(index), '; I = ', num2str(I)])
                switch I
                     case 2
                         iLat =  iLat  - 1;
@@ -215,7 +215,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
                         iLong = iLong + 1;
                         if iLong > length(LongGrid)
                             iLong = 1;
-                             disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
+                             % disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
                         end
 %                         disp(['go East, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 5
@@ -239,7 +239,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
                         iLong = iLong - 1;
                         if iLong == 0
                            iLong = length(LongGrid); 
-                            disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
+                            % disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
                         end
 %                         disp(['go West, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 9
@@ -255,12 +255,12 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
             end 
             MasterRefPoint = Grid(iLat,iLong,:); % reinitialize Master RefPoint
         else
-             disp([num2str(index),'; Process Point  : Lat: ', num2str(Point(1)),' , Long: ',num2str(Point(2))]);
-             disp([num2str(index),'; MasterPoint OLD: Lat: ', num2str(MasterRefPoint(1)),'      , Long: ',num2str(MasterRefPoint(2))]);
-             disp(['Previous: iLat: ',num2str(iLat),'; iLong: ',num2str(iLong)]);
+             % disp([num2str(index),'; Process Point  : Lat: ', num2str(Point(1)),' , Long: ',num2str(Point(2))]);
+             % disp([num2str(index),'; MasterPoint OLD: Lat: ', num2str(MasterRefPoint(1)),'      , Long: ',num2str(MasterRefPoint(2))]);
+             % disp(['Previous: iLat: ',num2str(iLat),'; iLong: ',num2str(iLong)]);
             [iLat, iLong] =  SearchForNearestPoint(LatGrid, LongGrid, Point);
             MasterRefPoint = Grid(iLat,iLong,:); % reinitialize Master RefPoint
-             disp([num2str(index),'; MasterPoint NEW: Lat: ', num2str(MasterRefPoint(1)),' ; Long: ',num2str(MasterRefPoint(2))]);
+             % disp([num2str(index),'; MasterPoint NEW: Lat: ', num2str(MasterRefPoint(1)),' ; Long: ',num2str(MasterRefPoint(2))]);
 %             index = index - 1; % roll back index
         end   
     end

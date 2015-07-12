@@ -1,4 +1,4 @@
-function[c] = HarmomicAnalysis(time,values,TrendName)
+function[c] = HarmomicAnalysis(values, time,TrendName)
 % by Alexandr Sokolov
 
 DataPool = SetGlobalVariables;
