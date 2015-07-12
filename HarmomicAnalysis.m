@@ -5,40 +5,42 @@ DataPool = SetGlobalVariables;
 
 Year = 365.25; % days
 CyclePeriod = 9.9156; % days 
+MoonPeriod =  27.32;
 
-T1 = (Year / 0.5 )/CyclePeriod;   
-T2 = (Year / 1 )/CyclePeriod;   
-T3 = (Year / 2 )/CyclePeriod;   
+T1 = (Year / 1 )/CyclePeriod;   
+T2 = (Year / 2 )/CyclePeriod;   
+T3 = (Year / 3 )/CyclePeriod;   
 T4 = (Year / 4 )/CyclePeriod;   
 T5 = (Year / 6 )/CyclePeriod;
 
-T = [2 1 1/2 1/4 1/6]*Year/CyclePeriod;
-NumberOfHarmonics = length(T);
 
-% make Desing Matrix
-TrendTerm = [ones(size(time,1),1),  time];
-HarmonicsTerms = zeros(size(time,1),length(T)*2);
+% T = [2 1 1/2 1/4 1/6]*Year/CyclePeriod;
+% NumberOfHarmonics = length(T);
+% 
+% % make Desing Matrix
+% TrendTerm = [ones(size(time,1),1),  time];
+% HarmonicsTerms = zeros(size(time,1),length(T)*2);
+% 
+% for index = 1:2:NumberOfHarmonics*2
+%     HarmonicsTerms(:,index)   = sin(2*pi/T((index+1)/2)*(time))';
+%     HarmonicsTerms(:,index+1) = cos(2*pi/T((index+1)/2)*(time))';
+% end
+% 
+% A = [TrendTerm HarmonicsTerms]; 
 
-for index = 1:2:NumberOfHarmonics*2
-    HarmonicsTerms(:,index)   = sin(2*pi/T((index+1)/2)*(time))';
-    HarmonicsTerms(:,index+1) = cos(2*pi/T((index+1)/2)*(time))';
-end
 
-A = [TrendTerm HarmonicsTerms]; 
-
-
-% A = [ones(size(time,1),1)'; 
-%      time';
-%      sin(2*pi/T1*(time))';
-%      cos(2*pi/T1*(time))';
-%      sin(2*pi/T2*(time))'; 
-%      cos(2*pi/T2*(time))'; 
-%      sin(2*pi/T3*(time))'; 
-%      cos(2*pi/T3*(time))'; 
-%      sin(2*pi/T4*(time))'; 
-%      cos(2*pi/T4*(time))';
-%      sin(2*pi/T5*(time))';
-%      cos(2*pi/T5*(time))']';
+A = [ones(size(time,1),1)'; 
+     time';
+     sin(2*pi/T1*(time))';
+     cos(2*pi/T1*(time))';
+     sin(2*pi/T2*(time))'; 
+     cos(2*pi/T2*(time))'; 
+     sin(2*pi/T3*(time))'; 
+     cos(2*pi/T3*(time))'; 
+     sin(2*pi/T4*(time))'; 
+     cos(2*pi/T4*(time))';
+     sin(2*pi/T5*(time))';
+     cos(2*pi/T5*(time))']';
 c = (A'*A)^-1*A'*values;
 
 error = A*c-values;
@@ -57,11 +59,11 @@ f5 = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time)) + c(
 f6 = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time)) + c(5)*sin(2*pi/T2*(time)) + c(6)*cos(2*pi/T2*(time)) + c(7)*sin(2*pi/T3*(time)) + c(8)*cos(2*pi/T3*(time)+ c(9)*sin(2*pi/T4*(time)) + c(10)*cos(2*pi/T4*(time)) + + c(11)*sin(2*pi/T5*(time)) + c(12)*cos(2*pi/T5*(time)));
 
 
-h1 = c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time));
-h2 = c(5)*sin(2*pi/T2*(time)) + c(6)*cos(2*pi/T2*(time));
-h3 = c(7)*sin(2*pi/T3*(time)) + c(8)*cos(2*pi/T3*(time));
-h4 = c(9)*sin(2*pi/T4*(time)) + c(10)*cos(2*pi/T4*(time));
-h5 = c(11)*sin(2*pi/T5*(time)) + c(12)*cos(2*pi/T5*(time));
+h1 = c(3) * sin(2*pi/T1*(time)) + c(4) * cos(2*pi/T1*(time));
+h2 = c(5) * sin(2*pi/T2*(time)) + c(6) * cos(2*pi/T2*(time));
+h3 = c(7) * sin(2*pi/T3*(time)) + c(8) * cos(2*pi/T3*(time));
+h4 = c(9) * sin(2*pi/T4*(time)) + c(10)* cos(2*pi/T4*(time));
+h5 = c(11)* sin(2*pi/T5*(time)) + c(12)* cos(2*pi/T5*(time));
 
 Trend_harmonics = values - h1 - h2 - h3 - h4 - h5;
 
@@ -77,6 +79,8 @@ if (~strcmp(TrendName,'no'))
     plot(time,values,'.-b')
     plot(time,f1,'r')
     plot(time,f6,'m')
+    legend('timeseries','trend','approximated')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,2)
     hold on
@@ -85,31 +89,44 @@ if (~strcmp(TrendName,'no'))
     plot(time,h3,'black')
     plot(time,h4,'y')
     plot(time,h5,'r')
+    legend('annual','semi-annual','4-month period','3-month period','60-days')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,3)
     hold on
     plot(time,values-f1,'.-b')
     plot(time,h1,'m')
+    legend('timeseries - trend','annual')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,4)
     hold on
     plot(time,values-f2,'.-b')
     plot(time,h2,'g')
+    legend('timeseries - trend - annual','semi-annual')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,5)
     hold on
     plot(time,values-f3,'.-b')
     plot(time,h3,'black')
+    legend('timeseries - trend - annual - semi-annual','4 month period')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,6)
     hold on
     plot(time,values-f4,'.-b')
     plot(time,h4,'r')
+    legend('timeseries - (trend : 4 month period)','3 month period')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,7)
     hold on
     plot(time,values-f5,'.-b')
     plot(time,h5,'r')
+    legend('timeseries - (trend : 3 month period' , '60 days')
+    xlabel('Cycle, [1 cycle = 10 days]')
+    ylabel('[m]')
     xlim([min(time) max(time)])
     subplot(4,2,8)
     hold on

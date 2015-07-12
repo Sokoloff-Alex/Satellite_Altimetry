@@ -44,14 +44,16 @@ for index = 1:NumberOfCycles
     GlobalTrendWeighted(index) = nansum(nansum(Map.*(cosd(lat)'*ones(1,size(Map,2))))) / (dim - sum(sum(isnan(Map))));
 end
 
-%%
+% 60 days smoothing, Compute global mean for each cycle and Estimate trend
 [MatrixSmoothed, timeVectorSmoothed] = makeSmooth(Matrix, timeVectorAll,7);
 GlalTrendSmWeighted3 = globalMean(MatrixSmoothed);
+% [GlobalTrendSlope_Weighted] = HarmomicAnalysis(GlobalTrendWeighted, timeVectorAll, MapType(1:end-8));
+[GlobalTrendSlopeSmoothed_Weighted] = HarmomicAnalysis(GlalTrendSmWeighted3, timeVectorSmoothed, MapType(1:end-8));
 
 %% Make Trend Map                             
 [TrendMap, TrendMapScaled] = makeTrendMap(MatrixSmoothed, timeVectorAll, NanPercentThreshold, MapType);
 
-%% DeriveIceMask
+%% Apply Ice Mask
 IceMask = makeIceMask(TrendMap);
 
 % apply IseMask to Matrix of DataStack 
@@ -59,18 +61,15 @@ IceMask = makeIceMask(TrendMap);
 
 % calc new global mean
 GlalTrendSmWeighted4 = globalMean(MatrixSmoothed);
-%% Global Trend
-[GlobalTrendSlopeSmoothed_Weighted] = HarmomicAnalysis(GlalTrendSmWeighted3, timeVectorSmoothed, MapType(1:end-8));
 
-%% Global Trend without Icy regions
+% Global Trend without Icy regions
 [GlobalTrendSlopeSmoothed_Weighted] = HarmomicAnalysis(GlalTrendSmWeighted4, timeVectorSmoothed, MapType(1:end-8));
 
-
 %% FFT ok
-% % fftAnalysis(x,                y,         fmin, fmax)
+% % fftAnalysis(x,                y,                   fmin, fmax)
 % fftAnalysis(timeVectorAll,      GlobalTrend,           0, 0.2)
 % fftAnalysis(timeVectorSmoothed, GlobalTrendSm,         0, 0.2)
-% fftAnalysis(timeVectorAll,      GlobalTrendWeighted,   0, 0.2)
+fftAnalysis(timeVectorAll,      GlobalTrendWeighted,   0, 0.2)
 % fftAnalysis(timeVectorSmoothed, GlobalTrendSmWeighted, 0, 0.2)
 
 %%

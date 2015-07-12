@@ -7,7 +7,7 @@ function[TrendMap, TrendMapScaled] = makeTrendMap(Matrix, timeVectorAll, NanPerc
 %             
 % Output:    TrendMap               - 1D Matrix in [m/cycle] units
 %            TrendMapScaled         - 1D Matrix in [mm/year] units and filtered by
-%                                     Limit of Sea Level Rize = 250 mm/year to delete outliers
+%                                     Limit of Sea Level Rise = 250 mm/year to delete outliers
 % 
 % by Alexandr Sokolov, 2015
 
