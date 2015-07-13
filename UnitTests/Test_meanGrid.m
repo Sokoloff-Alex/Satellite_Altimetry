@@ -37,31 +37,42 @@ FigGrid1 = figure(1);
 set(gcf,'PaperPositionMode','auto')
 set(FigGrid1, 'Position', [0 0 1900 1000])
 pcolor(flipud(CounterMatrix));
-legend(textLegend);
+% legend(textLegend);
 shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar('peer',gca); 
 caxis([0 350])
 xlabel(h,'# of Points')
+ax = gca;
+xlabel('Longitude, [deg]')
+set(ax,'XTick',     [0:30:360])
+ylabel('Latitude, [deg]')    
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
+ylim([4 141-4])
 title(['measurement points distribution into grid cells, cycle ',num2str(Cycle)])
-% print(FigGrid1,'-dpng',[DataPool,'Results\',num2str(Cycle),'\GriddingMap_',num2str(Cycle),'.png']);
 print(FigGrid1,'-dpng',[DataPool,'Results\MapsFinal\GriddingMap_',num2str(Cycle),'.png']);
- 
-Fig_SSH_Map = figure(2);
+ Fig_SSH_Map = figure(2);
 set(gcf,'PaperPositionMode','auto')
 set(Fig_SSH_Map, 'Position', [0 0 1900 1000])
 pcolor(flipud(SSHMap));
-legend(textLegend);
+% legend(textLegend);
 shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
+caxis([-105 85])
 xlabel(h,'SSH, [m]');
-title(['SSH map, cycle ',num2str(Cycle),', no weighting'])
-% print(Fig_SSH_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Map_',num2str(Cycle),'.png']);
-print(Fig_SSH_Map, '-dpng',[DataPool,'Results\MapsFinal\SSH_Map_',num2str(Cycle),'.png']);
+ax = gca;
+xlabel('Longitude, [deg]')
+set(ax,'XTick',     [0:30:360])
+ylabel('Latitude, [deg]')    
+ylim([4 141-4])
+set(ax,'YTick',     [  1     4    30    50   70    90   110  141-4   141 ])
+set(ax,'YTickLabel',{'70','-66','-40','-20' ,'0', '20', '40', '66',  '70'})
+title(['MSSH map, cycle ',num2str(Cycle),', mean weighting'])
+print(Fig_SSH_Map, '-dpng',[DataPool,'Results\MapsFinal\MSSH_Map_',num2str(Cycle),'.png']);
 
 Fig_SSHAnomaly_Map = figure(3);
 set(gcf,'PaperPositionMode','auto')
@@ -72,11 +83,11 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
-xlabel(h,'SSH Anomaly, [m]');
-title(['SSH Anomaly map, cycle ',num2str(Cycle),', no weighting'])
+% caxis([0 4])
+xlabel(h,'[m]');
+title(['GEOID map, cycle ',num2str(Cycle),', no weighting'])
 % print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\SSH_Anomaly_Map_',num2str(Cycle),'.png']);
-print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\MapsFinal\SSH_Anomaly_Map_',num2str(Cycle),'.png']);
+print(Fig_SSHAnomaly_Map, '-dpng',[DataPool,'Results\MapsFinal\_GEOID_Map_',num2str(Cycle),'.png']);
 
 Fig_MDT_Map = figure(4);
 set(gcf,'PaperPositionMode','auto')
@@ -87,11 +98,11 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
-xlabel(h,'SMDT, [m]');
-title(['MDT map, cycle ',num2str(Cycle),', no weighting'])
+% caxis([0 4])
+xlabel(h,'[m]');
+title(['Corrections map, cycle ',num2str(Cycle),', no weighting'])
 % print(Fig_MDT_Map, '-dpng',[DataPool,'Results\',num2str(Cycle),'\MDT_Map_',num2str(Cycle),'.png']);
-print(Fig_MDT_Map, '-dpng',[DataPool,'Results\MapsFinal\MDT_',num2str(Cycle),'.png']);
+print(Fig_MDT_Map, '-dpng',[DataPool,'Results\MapsFinal\Corrections_',num2str(Cycle),'.png']);
 
 figCombination = figure(5);
 set(gcf,'PaperPositionMode','auto')
@@ -103,9 +114,9 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
-xlabel(h,'SSH, [m]');
-title(['SSH map, cycle ',num2str(Cycle),', no weighting'])
+% caxis([0 4])
+xlabel(h,'MSSH, [m]');
+title(['MSSH map, cycle ',num2str(Cycle),', no weighting'])
 
 subplot(2,4,3:4)
 pcolor(flipud(SSHAnomalyMap));
@@ -114,9 +125,9 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
-xlabel(h,'SSH Anomaly, [m]');
-title(['SSH Anomaly map, cycle ',num2str(Cycle),', no weighting'])
+% caxis([0 4])
+xlabel(h,'[m]');
+title(['GEOID map, cycle ',num2str(Cycle),', no weighting'])
 
 subplot(2,4,5:6)
 pcolor(flipud(MDTMap));
@@ -125,9 +136,9 @@ shading flat
 set(gcf, 'renderer', 'zbuffer');
 % set(gcf,'Visible','off') 
 h = colorbar;
-caxis([0 4])
-xlabel(h,'SMDT, [m]');
-title(['MDT map, cycle ',num2str(Cycle),', no weighting'])
+% caxis([0 4])
+xlabel(h,'[m]');
+title(['Corrections map, cycle ',num2str(Cycle),', no weighting'])
 
 subplot(2,4,7:8)
 pcolor(flipud(CounterMatrix));

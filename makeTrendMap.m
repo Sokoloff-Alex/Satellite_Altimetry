@@ -36,7 +36,7 @@ for row = 1:size(Matrix,1)
             end
             values = values(1:counter);
             timeVector = timeVector(1:counter);
-            [coeff] = HarmomicAnalysis(timeVector,values,'no');
+            [coeff] = HarmomicAnalysis(values,timeVector,'no');
             TrendMatrix(row,column,1:12) = coeff;
             TrendMap(row,column) = coeff(2);
         else

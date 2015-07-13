@@ -51,7 +51,7 @@ variance = (error'*error)/(M-N);
 
 y = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time)) + c(5)*sin(2*pi/T2*(time)) + c(6)*cos(2*pi/T2*(time)) + c(7)*sin(2*pi/T3*(time)) + c(8)*cos(2*pi/T3*(time)+ c(9)*sin(2*pi/T4*(time)) + c(10)*cos(2*pi/T4*(time)) + c(11)*sin(2*pi/T5*(time)) + c(12)*cos(2*pi/T5*(time)));
 
-f1 = c(1)+c(2)*(time);
+TrendLine = c(1)+c(2)*(time);
 f2 = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time));
 f3 = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time)) + c(5)*sin(2*pi/T2*(time)) + c(6)*cos(2*pi/T2*(time));
 f4 = c(1)+c(2)*(time) + c(3)*sin(2*pi/T1*(time)) + c(4)*cos(2*pi/T1*(time)) + c(5)*sin(2*pi/T2*(time)) + c(6)*cos(2*pi/T2*(time)) + c(7)*sin(2*pi/T3*(time)) + c(8)*cos(2*pi/T3*(time));
@@ -77,7 +77,7 @@ if (~strcmp(TrendName,'no'))
     subplot(4,2,1)
     hold on
     plot(time,values,'.-b')
-    plot(time,f1,'r')
+    plot(time,TrendLine,'r')
     plot(time,f6,'m')
     legend('timeseries','trend','approximated')
     ylabel('[m]')
@@ -94,7 +94,7 @@ if (~strcmp(TrendName,'no'))
     xlim([min(time) max(time)])
     subplot(4,2,3)
     hold on
-    plot(time,values-f1,'.-b')
+    plot(time,values-TrendLine,'.-b')
     plot(time,h1,'m')
     legend('timeseries - trend','annual')
     ylabel('[m]')
@@ -131,7 +131,7 @@ if (~strcmp(TrendName,'no'))
     subplot(4,2,8)
     hold on
     plot(time,Trend_harmonics,'.-b')
-    plot(time,f1,'r')
+    plot(time,TrendLine,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('change [m]')
     legend(['Timeseries without harmonics'], 'Trend')
@@ -148,7 +148,7 @@ if (~strcmp(TrendName,'no'))
     subplot(2,1,1)
     hold on
     plot(time,values,'.-b')
-    plot(time,f1,'r')
+    plot(time,TrendLine,'r')
     plot(time,f6,'m')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
@@ -157,7 +157,7 @@ if (~strcmp(TrendName,'no'))
     subplot(2,1,2)
     hold on
     plot(time,Trend_harmonics,'.-b')
-    plot(time,f1,'r')
+    plot(time,TrendLine,'r')
     xlabel('Cycle, [1 cycle = 10 days]')
     ylabel('[m]')
     legend('Timeseries - harmonics','Trend')

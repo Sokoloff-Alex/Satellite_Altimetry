@@ -45,13 +45,13 @@ try
     factor = 1.6;
     textLegend = ['Grid ',num2str(longSize), 'x',num2str(latSize),', factor ', num2str(factor)];
         
-    [Grid,CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Data,longSize, latSize, factor, [21 22 23]); 
+    [Grid,CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix] = InterpolationFast(Data,longSize, latSize, factor, [14 15 20]); 
 catch
     disp('Error in InterpolationFast')
 end
 cd UnitTests
 %%
-
+Cycle = 110;
 [SSHMap, SSHAnomalyMap, MDTMap] = Test_meanGrid(CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMatrix, Cycle, textLegend);
 disp('Check meanGrig function')
 

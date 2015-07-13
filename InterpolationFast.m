@@ -3,6 +3,7 @@ function[Grid, CounterMatrix, DistanceMatrix, SSHMatrix, SSHAnomalyMatrix, MDTMa
 % and generate interpolated map
 % by Alexandr Sokolov
 
+tic;
 % DataPool = SetGlobalVariables;
 % DataPool = [DataPool,'Test\'];
 
@@ -26,7 +27,7 @@ iMDT = valuesOfInterest(3);
 % |7 6 5|
 % =======
 
-tic;
+
 % MeanDepth = size(Data,1)/(length(LatGrid)*length(LongGrid))
 CounterMatrix  = zeros(size(Grid,1),size(Grid,2));        
 SSHMatrix   = zeros(size(Grid,1),size(Grid,2),300);  % for 10x10 grid usually <1000 points in single RefPoint 
@@ -94,6 +95,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
             cLong = iLong + 1;
             if cLong > length(LongGrid)
                 cLong = 1; % back to first column, 360 -> 0
+                disp(['iteration: ' num2str(index),' Jump 360 -> 0']);
             end
             CurrentRefPoint = Grid(cLat,cLong,:);
             Distance(4) = OrthodromeArcLength(Point, [CurrentRefPoint(1),CurrentRefPoint(2)]);
@@ -215,7 +217,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
                         iLong = iLong + 1;
                         if iLong > length(LongGrid)
                             iLong = 1;
-                             % disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
+                              disp([num2str(index),' ;  Jump in switch, 360 -> 0 ged'])
                         end
 %                         disp(['go East, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 5
@@ -239,7 +241,7 @@ MasterRefPoint = Grid(iLat,iLong,:); % todo: make ato initialization
                         iLong = iLong - 1;
                         if iLong == 0
                            iLong = length(LongGrid); 
-                            % disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
+                             disp([num2str(index),'; Jump in switch, 0 -> 360 ged'])
                         end
 %                         disp(['go West, iLat: ',num2str(iLat),', iLong: ', num2str(iLong)])
                     case 9
