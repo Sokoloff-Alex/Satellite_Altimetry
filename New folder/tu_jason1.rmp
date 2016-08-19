@@ -1,0 +1,20 @@
+000 19 50 tu_jason1.rmp
+001 4 -5.d jday.00 julian day epoch 2000.0
+002 4 -6.deg glat.00 geodetic latitude of satellite footprint
+003 +4 -6.deg glon.00 longitude of satellite footprint
+004 +4 -3.m hsat.00 satellite height above ellipsoid
+005 +4 -3.m ralt.00 altimeter range
+006 2 -3.m stdalt.00 standard deviation of altimeter range
+007 2 -2.m swh.00 significant wave height
+008 2 -3.m otide.09 ocean tide correction
+009 2 -3.m etide.00 solid Earth tide correction
+010 2 -3.m invb.00 inverse barometer effect
+011 2 -3.m wtrop.00 wet tropospheric correction
+012 2 -3.m dtrop.00 Dry tropospheric correction
+013 2 -3.m ionos.00 ionospheric correction
+014 4 -3.m mssh.01 mean sea surface height
+015 4 -3.m geoh.00 Geoid heights 
+016 +1 0.- iflags.00 instrument status and quality flags
+017 +1 0.- oflags.00 Orbit status and quality flags
+018 2 -3.m ptide.00 pole tide correction
+019 2 -3.m emb.00 Electro-magnetic bias
